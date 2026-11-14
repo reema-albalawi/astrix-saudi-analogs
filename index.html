@@ -285,6 +285,20 @@ footer{border-top:1px solid var(--line);padding-block:28px 40px;font-size:.8rem;
 .refs{margin:0;padding-left:22px;display:grid;gap:6px;font-size:.88rem;color:#cfd1ea;max-width:80ch}
 .lpin span.w{left:auto;right:10px}
 @media (min-width:861px){.mapbox{position:sticky;top:72px}}
+.grade{font-family:var(--mono);font-size:.64rem;letter-spacing:.04em;padding:2px 7px;border-radius:3px;border:1px solid;white-space:nowrap}
+.grade.gA{color:var(--ok)}.grade.gB{color:var(--regolith)}.grade.gC{color:var(--warn)}.grade.gx{color:var(--muted);border-style:dashed}
+.world.ocean{color:#2ee6c8}
+.meas{margin:0;padding-left:18px;display:grid;gap:3px;font-size:.82rem;color:#d9dbf0}
+.card a,.refs a{color:var(--sand)}
+.refs li{scroll-margin-top:80px}.refs .mono{color:var(--sand);margin-right:4px}
+.refs a{word-break:break-all}
+.hp{position:absolute;left:12px;right:12px;bottom:12px;background:rgba(8,10,31,.86);border:1px solid rgba(255,255,255,.14);border-radius:6px;padding:12px 14px;display:grid;gap:8px;backdrop-filter:blur(6px);z-index:4}
+.hpsteps{display:flex;gap:6px 14px;flex-wrap:wrap;font-family:var(--mono);font-size:.68rem;color:#8f93b8}
+.hpsteps .on{color:#2ee6c8}
+.hp p{font-size:.86rem;color:#e3e5f6}
+.hpbtns{display:flex;gap:8px;flex-wrap:wrap}
+.btn:disabled{opacity:.4;cursor:default}
+.viewer.hpon .walkpad{display:none}
 </style>
 </head>
 <body>
@@ -303,13 +317,13 @@ footer{border-top:1px solid var(--line);padding-block:28px 40px;font-size:.8rem;
     <p class="eyebrow">Saudi Analogs · NASA Space Apps 2026</p>
     <h1 style="margin-top:14px">Rehearse the <em>Moon</em> and <span class="m">Mars</span> in the Saudi desert.</h1>
     <p class="lede">We find Saudi craters, sinkholes, lava tubes and dune fields that resemble lunar and Martian terrain, then match them to the problems past missions actually hit: dust on solar panels, wheels stuck in soft soil, freezing nights.</p>
-    <div class="cta"><a class="btn primary" href="#tour">Walk a site in 3D</a><a class="btn" href="#engine">Plan a test</a></div>
+    <div class="cta"><a class="btn primary" href="#tour">Walk a site in 3D</a><button class="btn" id="heroHp">Headset preview</button><a class="btn" href="#engine">Plan a test</a></div>
   </div>
   <aside class="challenge">
     <span class="tag">CHALLENGE</span>
     <p>Identify Earth locations that analog the permanent Moon base locations and Mars.</p>
     <div class="mono muted" style="font-size:.78rem;display:grid;gap:4px">
-      <span>10 Saudi sites · 3 systems · 9 mission lessons</span>
+      <span>24 cited studies · 10 evidence sites · 5 candidates</span>
       <span>Data: NASADEM · MODIS · MERRA-2 · LRO · HiRISE</span>
     </div>
   </aside>
@@ -350,12 +364,13 @@ footer{border-top:1px solid var(--line);padding-block:28px 40px;font-size:.8rem;
       </div>
       <div class="scalebar" id="scalebar"></div>
       <div class="gauge" id="gauge" hidden></div>
+      <div class="hp" id="hp" hidden><div class="hpsteps" id="hpSteps"></div><p id="hpText"></p><div class="hpbtns"><button class="btn small" id="hpBack">Back</button><button class="btn small" id="hpMotion" hidden>Use phone motion</button><button class="btn small primary" id="hpNext">Next</button><button class="btn small primary" id="hpVR" hidden>Enter VR</button><button class="btn small" id="hpClose">Close</button></div></div>
       <div class="divider" id="divider" hidden tabindex="0" role="slider" aria-label="Comparison divider"><span class="l">EARTH</span><span class="r" id="divR">MOON</span><i></i><b aria-hidden="true">⇆</b></div>
     </div>
   </div>
   <div class="sunbar"><label for="sun">Sun</label><input type="range" id="sun" min="0" max="1000" value="320"><span id="sunLbl" class="mono"></span><span id="shadeLbl" class="mono"></span></div>
   <div class="routes">
-    <div class="rhead"><span class="eyebrow">Rover routes · VR preview</span><div class="rbtns"><button class="btn small" id="driveBtn">Drive selected route</button><button class="btn small primary" id="vrBtn" hidden>Enter VR</button></div></div>
+    <div class="rhead"><span class="eyebrow">Rover routes · VR preview</span><div class="rbtns"><button class="btn small primary" id="hpBtn">Headset preview</button><button class="btn small" id="driveBtn">Drive selected route</button><button class="btn small primary" id="vrBtn" hidden>Enter VR</button></div></div>
     <div class="rlist" id="rlist"></div>
     <p class="muted rnote" id="vrNote">Pick a route to see its length and slope. Turn on Compare and press Drive to ride the same route on Earth and on the Moon or Mars at once. On a VR headset browser with WebXR, an Enter VR button appears and puts you on the route at real scale. Full headset support with base-building tools is our next step. Slope ratings are illustrative until our rover mobility criterion is final.</p>
   </div>
@@ -394,9 +409,9 @@ footer{border-top:1px solid var(--line);padding-block:28px 40px;font-size:.8rem;
 <section id="sites">
   <div class="sechead">
     <p class="eyebrow">Candidate analog sites</p>
-    <h2>Ten Saudi landscapes, ten off-world counterparts.</h2>
-    <p>Five are known analogs documented in NASA sources. Five are new candidates our team identified. Similarity is the team's estimate from published comparisons; climate figures come from NASA data.</p>
-    <div class="seg" id="siteFilter" role="group" aria-label="Filter sites"><button data-f="all" aria-pressed="true">All 10</button><button data-f="known" aria-pressed="false">Known analogs</button><button data-f="new" aria-pressed="false">New discoveries</button></div>
+    <h2>Saudi analog sites, backed by published evidence.</h2>
+    <p>Every value below comes from a cited study. We do not calculate similarity percentages; each site shows its evidence grade, what was measured, and what was not proven. Candidates are sites our team proposed that still need published evidence.</p>
+    <div class="seg" id="siteFilter" role="group" aria-label="Filter sites"><button data-f="all" aria-pressed="true">All</button><button data-f="evidence" aria-pressed="false">Evidence on land</button><button data-f="marine" aria-pressed="false">Ocean-world analogs</button><button data-f="candidate" aria-pressed="false">Candidates</button></div>
   </div>
   <div class="mapgrid">
     <div class="mapbox"><div class="mapframe"><svg id="map" viewBox="0 0 520 470" role="img" aria-label="Relief map of Saudi Arabia with candidate sites"></svg><div id="lmap" class="lmap"></div></div><p class="mono muted" id="mapmode" style="font-size:.7rem;margin-top:8px">Illustrated relief map · satellite imagery loads on the public site</p></div>
@@ -442,7 +457,7 @@ footer{border-top:1px solid var(--line);padding-block:28px 40px;font-size:.8rem;
     <div class="in">
       <div class="group"><small>Space system</small><div class="pills" id="systems"></div></div>
       <div class="group"><small>Environmental factors</small><div class="pills" id="factors"></div></div>
-      <p class="muted" style="font-size:.8rem">Weather data alone cannot prove material resistance. A real test still needs samples and instruments on site.</p>
+      <p class="muted" style="font-size:.8rem">Weather data alone cannot prove material resistance. A real test still needs samples and instruments on site. Seasons are indicative and still need NASA POWER records for each site.</p>
     </div>
     <div class="out" id="results"></div>
   </div>
@@ -489,14 +504,14 @@ footer{border-top:1px solid var(--line);padding-block:28px 40px;font-size:.8rem;
   <div class="crit">
     <a class="cr" href="#replay"><span class="ci" style="--c:var(--regolith)">01</span><b>Impact</b><p>Points engineers to a real Saudi site and season for tests that could have helped Opportunity, InSight and Spirit.</p><span class="go">See Mission replay</span></a>
     <a class="cr" href="#tour"><span class="ci" style="--c:var(--sand)">02</span><b>Creativity</b><p>The same ground seen as Earth, Moon and Mars, side by side, with a movable Sun and a rover-route VR preview. Failures are linked to places, not only to terrain.</p><span class="go">Try Compare</span></a>
-    <a class="cr" href="#scale"><span class="ci" style="--c:var(--rust)">03</span><b>Validity</b><p>NASA datasets, true-scale comparisons, missing values marked as pending, and stated limits of the analog.</p><span class="go">See To scale</span></a>
+    <a class="cr" href="#scale"><span class="ci" style="--c:var(--rust)">03</span><b>Validity</b><p>24 cited studies with evidence grades, published measurements only, no invented similarity scores, and stated limits for every site.</p><span class="go">See To scale</span></a>
     <a class="cr" href="#sites"><span class="ci" style="--c:var(--regolith)">04</span><b>Relevance</b><p>Answers the challenge directly: Saudi analogs for lunar south-pole base sites and for Mars, with low-angle polar lighting.</p><span class="go">See the sites</span></a>
     <a class="cr" href="#top"><span class="ci" style="--c:var(--sand)">05</span><b>Presentation</b><p>One public link that runs in any browser and walks from problem to recommended test in under five minutes.</p><span class="go">Back to top</span></a>
   </div>
 </section>
 
 <section id="refs">
-  <div class="sechead"><p class="eyebrow">References</p><h2>NASA sources</h2></div>
+  <div class="sechead"><p class="eyebrow">References</p><h2>Sources</h2><p>Studies cited on this page, with links to the original publisher. NASA data for the next comparison step: Moon Trek, Mars Trek, Earthdata Search, NASA POWER, NASADEM / SRTM, LRO Diviner and HiRISE.</p></div>
   <ol class="refs" id="refList"></ol>
 </section>
 
@@ -527,68 +542,98 @@ footer{border-top:1px solid var(--line);padding-block:28px 40px;font-size:.8rem;
 <script>
 /* ---------------- DATA ---------------- */
 const SITES=[
- {id:'wahbah',group:'known',name:'Al Wahbah Crater',type:'Volcanic maar crater',lat:22.9090,lon:41.1440,world:'Moon',sim:92,scale:20,
-  analog:'Large lunar craters (Shackleton, Copernicus) and deep Martian craters',
-  simText:'Steep crater walls like lunar craters, and a low floor with sharp day–night temperature swings.',
-  diff:'The floor is white evaporite salt; lunar and Martian craters are covered in regolith instead.',
-  test:'Rock-wall stability, rover handling on sharp rims, thermal contrast.',
-  climate:{t:'10 – 42 °C',h:'15 – 30 %',r:'< 70 mm',s:'> 6.5 kWh/m²'},nasa:'SRTM, Planetary Analog Explorer',refs:[3,2]},
- {id:'khaybar',group:'known',name:'Harrat Khaybar',type:'Basaltic volcanic field',lat:25.5000,lon:39.9000,world:'Mars',sim:89,scale:30,
-  analog:'Martian volcanic provinces and old lunar basalt basins',
-  simText:'Dark basalt interleaved with pale volcanic rock, like the Tharsis highlands on Mars.',
-  diff:'Sparse vegetation grows around Khaybar; the Moon and Mars have none.',
-  test:'Effect of dust and volcanic ash on solar panels; heat resistance of materials.',
-  climate:{t:'5 – 44 °C',h:'20 – 35 %',r:'50 – 90 mm',s:'6.8 kWh/m²'},nasa:'NASA Earth Observatory',refs:[4,5]},
- {id:'dunes',group:'known',name:"Rub' al Khali",type:'Linear dunes and sabkhas',lat:20.0000,lon:50.0000,world:'Mars',sim:94,scale:10,
-  analog:'Martian dunes and salt deposits (Meridiani Planum)',
-  simText:'Linear dunes and evaporite sabkha flats that closely match the Meridiani basin on Mars.',
-  diff:'A thick atmosphere at normal pressure, unlike the thin Martian air.',
-  test:'Rover mobility in soft sand; dust build-up on solar panels.',
-  climate:{t:'8 – 50 °C',h:'10 – 40 % (variable)',r:'< 30 mm',s:'> 7.2 kWh/m²'},nasa:'NTRS: Rub\' al Khali interdune sabkha analog',refs:[6]},
- {id:'rahat',group:'known',name:'Harrat Rahat',type:'Broken basalt lava field',lat:23.0800,lon:39.7800,world:'Mars',sim:91,scale:20,
-  analog:'Martian volcanic plains (Tharsis, Elysium) and broken basalt terrain',
-  simText:'Sharp, irregular rocks that wear tyres, like the terrain that damaged Curiosity\'s wheels.',
-  diff:'Recent documented volcanic activity, while lunar volcanoes are long extinct.',
-  test:'Wheel and tyre durability against sharp rock.',
-  climate:{t:'12 – 41 °C',h:'25 – 40 %',r:'80 – 120 mm',s:'6.3 kWh/m²'},nasa:'SRTM',refs:[3]},
- {id:'hisma',group:'known',name:'Hisma Plateau',type:'Red sandstone mesas (near Wadi Rum)',lat:28.7500,lon:35.8000,world:'Mars',sim:95,scale:15,
-  analog:'Valles Marineris and the slopes of Gale crater',
-  simText:'Red sand slopes and iron-oxide coated rock that look like Martian landscapes.',
-  diff:'Narrow rock corridors channel winds at Earth pressure, very different from thin Martian air.',
-  test:'Visual navigation on red terrain; effect of dust storms on power.',
-  climate:{t:'4 – 39 °C',h:'20 – 35 %',r:'< 50 mm',s:'6.6 kWh/m²'},nasa:'Planetary Analog Explorer',refs:[2]},
- {id:'hith',group:'new',name:'Dahl Hith',type:'Karst collapse sinkhole',lat:24.4847,lon:46.9994,world:'Mars',sim:88,scale:2,
-  analog:'Martian collapse pits (Arsia Mons) and deep sulphur-rich settings',
-  simText:'Steep drop into dark caves, with limestone and sulphur features like Martian cave settings.',
-  diff:'An underground pool sits on the floor; Martian pits are completely dry.',
-  test:'Tethered descent systems; stability of pit walls and slopes.',
-  climate:{t:'22 – 43 °C',h:'up to 60 % near water',r:'none inside',s:'≈ 0 on the floor'},nasa:'SRTM',refs:[3]},
- {id:'summan',group:'new',name:'As-Summan Dahls',type:'Karst plateau with vertical openings',lat:26.5000,lon:47.5000,world:'Moon',sim:93,scale:3,
-  analog:'Lunar skylights (Marius Hills) and collapse pits',
-  simText:'Vertical openings in karst rock lead to radiation-sheltered spaces, like lava-tube skylights.',
-  diff:'Sedimentary limestone, while lunar and Martian skylights are volcanic.',
-  test:'Navigation and fall avoidance with LIDAR; wireless links and radiation shielding underground.',
-  climate:{t:'18 – 45 °C',h:'20 – 45 %',r:'< 60 mm',s:'none under the roof'},nasa:'NTRS: planetary caves and analogs',refs:[7]},
- {id:'jirsan',group:'new',name:'Umm Jirsan Cave',type:'Lava tube',lat:25.5881,lon:39.7575,world:'Moon',sim:96,scale:10,
-  analog:'Lunar and Martian lava tubes (e.g. Mare Tranquillitatis)',
-  simText:'A thick, solid basalt roof, the kind of lava tube that could shelter astronauts from meteorites and radiation.',
-  diff:'Traces of life (bones and droppings) that lifeless lunar tubes do not have.',
-  test:'Permanent habitat design, natural thermal insulation and radiation shielding.',
-  climate:{t:'20 – 23 °C (stable)',h:'30 – 45 %',r:'none inside',s:'0 % inside'},nasa:'NASA Earth Observatory',refs:[4]},
- {id:'tuwaiq',group:'new',name:'Edge of the World',type:'Jabal Tuwaiq escarpment',lat:24.9450,lon:45.9910,world:'Moon',sim:87,scale:10,
-  analog:'Rims of deep lunar craters (Shackleton rim) and Martian canyon cliffs',
-  simText:'A high, exposed cliff for testing LIDAR remote sensing and tilt measurement.',
-  diff:'Chalky limestone, unlike the basalt of lunar crater rims.',
-  test:'3D LIDAR mapping and line-of-sight communication.',
-  climate:{t:'7 – 42 °C',h:'15 – 30 %',r:'< 60 mm',s:'6.7 kWh/m²'},nasa:'Planetary Analog Explorer, SRTM',refs:[2,3]},
- {id:'sirhan',group:'new',name:'Wadi As-Sirhan Basin',type:'Dry sedimentary basin floor',lat:30.5000,lon:38.0000,world:'Mars',sim:90,scale:1,
-  analog:'Ancient Martian sedimentary basins (Jezero crater and landing zones)',
-  simText:'Cracked mud surfaces from long dry spells, like the Jezero landing environment.',
-  diff:'Light winter moisture at times; Martian basin floors have been dry for billions of years.',
-  test:'Precision landing (EDL) simulation; thermal tests on electronics and panels.',
-  climate:{t:'−2 – 41 °C',h:'20 – 50 %',r:'40 – 70 mm',s:'6.1 kWh/m²'},nasa:'NTRS, Planetary Analogs Portal',refs:[1,7]}
+ {id:'wahbah',group:'evidence',grade:'A',name:'Al Wahbah Crater',type:'Volcanic maar crater, Harrat Kishb',lat:22.90632,lon:41.13849,prec:'Published crater point [S01]',cat:'ocean',world:'Moon',terrain:true,scale:20,
+  analog:'Salty, alkaline ocean under the ice of Saturn\'s moon Enceladus (chemical and biological similarity, not surface) [S01]',
+  measured:['pH 8.9–9.4; conductivity 28.6–66.2 dS/m across three soil types [S01]','48 bacterial strains isolated and 2 genomes sequenced [S01]; 65 representative isolates [S03]','Incubation at 35–55 °C in the lab, not field weather [S01, S03]'],
+  dates:'Samples Feb 2023 [S01] and Apr 2021 [S03]; earlier study 2018 [S02]',tools:'Agilent 5110 ICP-OES, Flash 2000 CHNS/O, pH/EC, 16S and genome sequencing, UHPLC–Orbitrap ID-X MS with GNPS [S01, S03]; ICP-MS, HACH DR-3900, Ultrameter II, Roche 454 [S02]',
+  limits:'Measures crater soil and bacterial growth only. Enceladus gravity and ocean pressure were not simulated, and no best season was identified.',use:'Crater-wall stability, rover handling on steep rims and thermal contrast for lunar crater bases.',
+  refs:['S01','S02','S03','S19','S21','S22'],view:'Steep maar walls around a white salt floor. Published as an Enceladus chemistry analog; we use its shape for lunar crater-base tests.'},
+ {id:'dunes',group:'evidence',grade:'B',name:'Wabar Craters, Rub\' al Khali',type:'Meteorite impact craters in a dune field',lat:21.503427,lon:50.472181,prec:'Survey site coordinates [S05]',cat:'mars',world:'Mars',terrain:true,scale:10,
+  analog:'Impact craters, comparable in principle to crater formation on the Moon and Mars [S05]; dune forms for future Mars comparison [S14]',
+  measured:['Crater diameters ≈114, 64 and 11 m [S05]','Impact deformation to ≈25 m depth [S05]','Dune mapping with ASTER GDEM v2 (≈30 m), MODIS (500 m) and 700 reference points [S14]'],
+  dates:'Field campaigns Dec 2019 and Feb 2020, two days each [S05]; visit Mar 2008 [S07]; dating samples 1995 [S06]; dune study 2022 [S14]',tools:'Geometrics G-858 caesium and G-857 proton magnetometers, GPS, TEM, seismic refraction, GPR and drone imaging [S05]; ASTER GDEM, MODIS, ETOPO1, ArcGIS, ERDAS IMAGINE [S14]',
+  limits:'An Earth impact site: no thermal or gravity match with the Moon is claimed. Some craters are buried by dunes, and the wider dune field has no single sample point.',use:'Rover mobility in soft sand and dust build-up on solar panels.',
+  refs:['S05','S06','S07','S14','S19'],view:'Linear dunes with the 114 m and 64 m Wabar craters. Soft-sand and dust test ground.'},
+ {id:'jirsan',group:'evidence',grade:'B',name:'Umm Jirsan Cave',type:'Lava tube, Harrat Khaybar',lat:25.5888,lon:39.757,prec:'Published cave coordinates [S09]',cat:'moon',world:'Moon',terrain:true,scale:10,
+  analog:'Lava tubes on the Moon and Mars (shape and cavities, not climate) [S08]',
+  measured:['Surveyed length 1,481.2 m; usual height 8–12 m; widest 45 m [S08]','Air 24 °C at station 5 on 18 May 2007 [S08]','Sediment 1.17 m thick at station 3 [S08]'],
+  dates:'Survey 16, 17 and 30 May 2007 [S08]; archaeology study 2024 [S09]',tools:'Disto laser distance meter and Suunto compass [S08]; XRD, C14, Total Station with EDM and GPS, OSL dating [S09]',
+  limits:'No space-agency equipment or lunar temperatures were tested. Some measurements serve archaeology, not space simulation.',use:'Habitat shelter, radiation shielding and underground navigation.',
+  refs:['S08','S09'],view:'Basalt plain over a collapsed lava tube with skylights. A candidate shelter type for lunar bases.'},
+ {id:'khaybar',group:'evidence',grade:'B',name:'Harrat Khaybar',type:'Basaltic volcanic field',lat:25.5,lon:40.0,prec:'Field centre, not a sample point [S11]',cat:'mars',world:'Mars',terrain:true,scale:30,
+  analog:'Basaltic volcanic terrain whose shapes can be compared with lunar and Martian surfaces [S10]',
+  measured:['384 volcanic vents mapped [S10]','16 new 40Ar/39Ar ages; rock ages, not test dates [S10]'],
+  dates:'Study published 2022 [S10]',tools:'≈30 m satellite imagery, ArcGIS Pro and GIS, fieldwork, 40Ar/39Ar dating [S10]',
+  limits:'The study forecasts future volcanism; it does not test rovers.',use:'Dust and volcanic ash on solar panels; navigation among cones.',
+  refs:['S10','S11','S24'],view:'Dark basalt flows and cinder cones. Rough ground for navigation and dust tests.'},
+ {id:'rahat',group:'evidence',grade:'B',name:'Northern Harrat Rahat',type:'Basalt lava field',lat:23.08,lon:39.78,prec:'Field centre, not a sample point [S13]',cat:'mars',world:'Mars',terrain:true,scale:20,
+  analog:'Basalt lava fields, cones, craters and flows (possible geological similarity) [S12]',
+  measured:['Northern section ≈3,340 km² with 900+ visible vents [S12, S23]'],
+  dates:'Multi-year studies; USGS report published 29 Dec 2023 [S12]',tools:'High-resolution DEMs, geological mapping, isotope dating, paleomagnetism, gravity, magnetotellurics, seismic tomography [S12]',
+  limits:'A geological map base, not a direct space-analog test.',use:'Wheel wear on sharp basalt, like the damage to Curiosity\'s wheels.',
+  refs:['S12','S13','S23'],view:'Sharp, broken basalt. Wheel-wear test ground.'},
+ {id:'eastsands',group:'evidence',grade:'A',name:'Eastern Province Sands',type:'Desert sand samples',lat:null,lon:null,prec:'Region only; no published sample point',cat:'mars',world:'Mars',terrain:false,
+  analog:'Possible Martian regolith simulants: grain size, friction, shear strength and composition [S04]',
+  measured:['Median grain size D50 ≈250 µm [S04]','Internal friction angle 35.2° [S04]','Shear tests at 50/100/150 kPa; lab loads, not Martian air pressure [S04]'],
+  dates:'Sample date not stated; published online 20 May 2026 [S04]',tools:'Stainless-steel samplers, sieve shaker (ASTM D6913), direct shear box (ASTM D3080), stereo microscope [S04]',
+  limits:'No exact sample location and no field robot test. XRD/XRF analysis is proposed, not done.',use:'Wheel–soil tests for rover mobility.',refs:['S04']},
+ {id:'sabkhas',group:'evidence',grade:'C',name:'Saudi Sabkhas and Deserts',type:'Nine salt-flat and desert sites',lat:null,lon:null,prec:'Nine general sites; no single point',cat:'mars',world:'Mars',terrain:false,
+  analog:'Salinity, dryness and environmental swings, useful for future Mars comparisons [S20, S19]',
+  measured:['Five samples per region at 5–20 cm depth [S20]','pH, moisture, conductivity and microbial diversity [S20]'],
+  dates:'Published 2020 [S20]',tools:'SEM JEOL 7500FA, HI98107 pH meter, EC meter, PCR and sequencing [S20]',
+  limits:'Not a direct Mars match, and the paper gives no point for each site. Sites: Awshaziyah, Al-Qasab, Al-Kasr, Tabuk, Al-Kharj, Madinah, Jubail, Taif, Buqayq.',use:'Biosignature and planetary-protection studies.',refs:['S20','S19']},
+ {id:'neom',group:'marine',grade:'B',name:'NEOM Deep Brine Pools',type:'Deep-sea brine pools, Gulf of Aqaba',lat:28.788598,lon:34.795156,prec:'Published CTD station [S15]',cat:'ocean',world:'Ocean',terrain:false,
+  analog:'Low-oxygen brine pools relevant to water worlds; no proven match with Enceladus [S15]',
+  measured:['Water 21.33 °C; salinity 40 → 160 PSU inside the pool [S15]','Oxygen ≈180 → under 10 µmol/L across the interface [S15]','Interface at 1,769.46 m depth [S15]'],
+  dates:'OceanX expedition 2020; published 2022 [S15]',tools:'ROV Argus Mariner XL, Kongsberg EM712/EM304 sonar, Sea-Bird 911+ CTD, Niskin bottles, refractometer, Picarro isotope spectrometer, ICP-MS/MS [S15]',
+  limits:'Marine exploration with no space instruments tested. Deep-water temperature is not Enceladus temperature.',use:'Instrument tests for future ocean-world probes.',refs:['S15','S19']},
+ {id:'hatiba',group:'marine',grade:'B',name:'Hatiba Mons Vents',type:'Hydrothermal vents, Red Sea',lat:22.2675,lon:37.851,prec:'Published Kabir Field sample point [S17]',cat:'ocean',world:'Ocean',terrain:false,
+  analog:'Hydrothermal activity and iron-rich deposits, candidate analogs for icy-moon oceans [S16, S19]',
+  measured:['Fluids and sediments up to 40 °C or more; a minimum, as loggers could not enter the vents [S16]','Kabir Field at ≈960 m depth [S17]'],
+  dates:'MAPR late 2021; surveys Feb 2022; ROV May 2022 and Feb 2023 [S16]; fungal samples May 2022 [S17]',tools:'AUV Hugin Superior, ROV, Kongsberg EM2040 multibeam, EdgeTech sub-bottom profiler, CTD, NOAA MAPR, HOBO logger, QGIS [S16, S17]',
+  limits:'The space link is a research possibility in a review [S19], not a test of life beyond Earth.',use:'Biosignature detection methods for icy moons.',refs:['S16','S17','S19']},
+ {id:'atlantis',group:'marine',grade:'B',name:'Atlantis II & Discovery Deeps',type:'Hot brine pools, central Red Sea',lat:21.345533,lon:38.083983,prec:'Atlantis II sample point [S18]; Discovery at 21.28475, 38.0484',cat:'ocean',world:'Ocean',terrain:false,
+  analog:'Hot, metal-rich, high-pressure brines for studying the limits of life on water worlds [S18, S19]',
+  measured:['Brine 68 °C at Atlantis II and 45 °C at Discovery [S18]','Sample depths ≈2,168 m and ≈2,180 m [S18]'],
+  dates:'Published 2012 [S18]; space-relevance review 2026 [S19]',tools:'Gravity corer; geochemical and microbial analysis [S18]',
+  limits:'In the central Red Sea between Saudi Arabia and Sudan; not claimed as Saudi territory.',use:'Extreme-environment limits for life-detection instruments.',refs:['S18','S19']},
+ {id:'hisma',group:'candidate',name:'Hisma Plateau',type:'Red sandstone mesas',lat:28.75,lon:35.8,prec:'Team guide coordinates',cat:'mars',world:'Mars',terrain:true,scale:15,
+  analog:'Proposed: Valles Marineris and the slopes of Gale crater',use:'Visual navigation on red terrain; effect of dust storms on power.',view:'Red sandstone mesas. Candidate site, not yet backed by a published study.'},
+ {id:'hith',group:'candidate',name:'Dahl Hith',type:'Karst collapse sinkhole',lat:24.4847,lon:46.9994,prec:'Team guide coordinates',cat:'mars',world:'Mars',terrain:true,scale:2,
+  analog:'Proposed: Martian collapse pits (Arsia Mons)',use:'Tethered descent; stability of pit walls.',view:'A narrow, vertical-walled collapse. Candidate site, not yet backed by a published study.'},
+ {id:'summan',group:'candidate',name:'As-Summan Dahls',type:'Karst plateau openings',lat:26.5,lon:47.5,prec:'Approximate centre, team guide',cat:'moon',world:'Moon',terrain:true,scale:3,
+  analog:'Proposed: lunar skylights (Marius Hills)',use:'LIDAR navigation, fall avoidance and underground radio links.',view:'Vertical openings in a limestone plateau. Candidate site, not yet backed by a published study.'},
+ {id:'tuwaiq',group:'candidate',name:'Edge of the World',type:'Jabal Tuwaiq escarpment',lat:24.945,lon:45.991,prec:'Team guide coordinates',cat:'moon',world:'Moon',terrain:true,scale:10,
+  analog:'Proposed: Shackleton crater rim and Martian canyon cliffs',use:'3D LIDAR mapping and line-of-sight communication.',view:'A high limestone escarpment. Candidate site, not yet backed by a published study.'},
+ {id:'sirhan',group:'candidate',name:'Wadi As-Sirhan Basin',type:'Dry sedimentary basin floor',lat:30.5,lon:38.0,prec:'Approximate centre, team guide',cat:'mars',world:'Mars',terrain:true,scale:1,
+  analog:'Proposed: Jezero crater sediments',use:'Precision landing (EDL) simulation and thermal tests.',view:'Cracked mud flats. Candidate site, not yet backed by a published study.'}
 ];
-const REFS=['NASA Science Planetary Analogs Portal','Planetary Analog Explorer (side-by-side Earth and Moon/Mars comparisons)','NASADEM & SRTM Digital Elevation Data','NASA Earth Observatory: White and Black Volcanoes of Saudi Arabia','NASA Earth Observatory: Harrat Khaybar Volcanic Field',"NTRS: Rub' al Khali Interdune Sabkha Analog for Present Mars",'NASA Technical Reports Server (NTRS): Planetary Caves & Exploration Analogs'];
+const REFS=[
+ ['S01','dos Santos et al. (2024). Investigating Polyextremophilic Bacteria in Al Wahbah Crater, Saudi Arabia: A Terrestrial Model for Life on Saturn\'s Moon Enceladus. Astrobiology.','https://doi.org/10.1089/ast.2024.0017'],
+ ['S02','Albokari et al. (2018). Niche for high abundant extremophilic microbial communities in an ancient crater. International Journal of Astrobiology.','https://doi.org/10.1017/S1473550417000295'],
+ ['S03','Schultz et al. (2026). Culturable bacterial diversity and genome-encoded metabolic potential in Al Wahbah Crater\'s volcanic soils, Saudi Arabia. Frontiers in Microbiology.','https://doi.org/10.3389/fmicb.2026.1867957'],
+ ['S04','Jrad & Alasadi (2026). Evaluation of GCC Desert Sands as Potential Martian Regolith Simulants. Geotechnical Innovation (Springer).','https://doi.org/10.1007/978-981-95-9215-9_6'],
+ ['S05','Hanafy et al. (2021). Comprehensive Geophysical Study at Wabar Crater, Rub Al-Khali Desert, Saudi Arabia. Earth and Space Science (AGU).','https://doi.org/10.1029/2020EA001432'],
+ ['S06','Prescott et al. (2004). Luminescence dating of the Wabar meteorite craters, Saudi Arabia. JGR: Planets (AGU).','https://doi.org/10.1029/2003JE002136'],
+ ['S07','Gnos et al. (2013). The Wabar impact craters, Saudi Arabia, revisited. Meteoritics & Planetary Science.','https://doi.org/10.1111/maps.12218'],
+ ['S08','Pint, J. J. (2009). Umm Jirsan: Arabia\'s Longest Lava-Tube System. 15th International Congress of Speleology.','https://vulcanospeleology.org/articles/jirsan.pdf'],
+ ['S09','Stewart et al. (2024). First evidence for human occupation of a lava tube in Arabia: The archaeology of Umm Jirsan Cave. PLOS ONE.','https://doi.org/10.1371/journal.pone.0299292'],
+ ['S10','(2022). Spatio-temporal forecasting of future volcanism at Harrat Khaybar, Saudi Arabia. Geoscience Letters.','https://doi.org/10.1186/s13617-022-00124-z'],
+ ['S11','Smithsonian Institution GVP (accessed 2026). Harrat Khaybar volcano profile. Global Volcanism Program.','https://volcano.si.edu/volcano.cfm?vn=231060'],
+ ['S12','Sisson, Calvert & Mooney, eds. (2023). Active volcanism on the Arabian Shield: Northern Harrat Rahat. USGS Professional Paper 1862.','https://doi.org/10.3133/pp1862'],
+ ['S13','Smithsonian Institution GVP (accessed 2026). Harrat Rahat volcano profile. Global Volcanism Program.','https://volcano.si.edu/volcano.cfm?vn=231070'],
+ ['S14','Almutlaq, Nahas & Mulligan (2022). Calculation of the Rub\' al Khali Sand Dune Volume for Estimating Potential Sand Sources. Remote Sensing.','https://doi.org/10.3390/rs14051216'],
+ ['S15','Purkis et al. (2022). Discovery of the deep-sea NEOM Brine Pools in the Gulf of Aqaba, Red Sea. Communications Earth & Environment.','https://doi.org/10.1038/s43247-022-00482-x'],
+ ['S16','van der Zwan et al. (2023). Widespread diffuse venting and large microbial iron-mounds in the Red Sea. Communications Earth & Environment.','https://doi.org/10.1038/s43247-023-01169-7'],
+ ['S17','Schultz et al. (2025). Diving into the deep: fungal diversity in the newly discovered hydrothermal vents of Hatiba Mons, Red Sea. Frontiers in Marine Science.','https://doi.org/10.3389/fmars.2025.1649339'],
+ ['S18','Bougouffa et al. (2012). Unique Prokaryotic Consortia in Geochemically Distinct Sediments from Red Sea Atlantis II and Discovery Deep Brine Pools. PLOS ONE.','https://doi.org/10.1371/journal.pone.0042872'],
+ ['S19','Schultz et al. (2026). Extreme Arabian environments and their microbiomes: new frontiers for astrobiology and biosignature discovery. Extremophiles.','https://doi.org/10.1007/s00792-026-01426-5'],
+ ['S20','Alotaibi et al. (2020). Microbial Diversity of Some Sabkha and Desert Sites in Saudi Arabia. PubMed Central.','https://pmc.ncbi.nlm.nih.gov/articles/PMC7499299/'],
+ ['S21','Smithsonian Institution GVP (accessed 2026). Harrat Kishb volcano profile (Al Wahbah). Global Volcanism Program.','https://volcano.si.edu/volcano.cfm?vn=231071'],
+ ['S22','KAUST (2024). Saudi Arabia crater holds clues for extraterrestrial life. KAUST News.','https://www.kaust.edu.sa/en/news/saudi-arabia-crater-holds-clues-for-extraterrestrial-life'],
+ ['S23','USGS / SGS (2019). Geologic map of northern Harrat Rahat volcanic field. USGS Scientific Investigations Map 3428.','https://doi.org/10.3133/sim3428'],
+ ['S24','Smithsonian Institution GVP (accessed 2026). Volcano database coordinates for Harrat Khaybar / Rahat. Global Volcanism Program.','https://volcano.si.edu/volcanolist_countries.cfm?country=Saudi_Arabia']
+];
 
 const MISSIONS=[
  ['Opportunity','2018–2019','mars','A global dust storm blocked the Sun and drained power.','Rover lost','bad'],
@@ -684,10 +729,11 @@ let svg=`<defs>
 <polygon points="${pts(BORDER)}" fill="none" stroke="#fff" stroke-opacity=".85" stroke-width="1.2" stroke-dasharray="5 3"/>
 <g font-family="IBM Plex Mono,monospace" font-size="9" fill="#cfe3f3" letter-spacing=".12em" opacity=".8"><text x="${P(36.6,22)[0]}" y="${P(36.6,22)[1]}" transform="rotate(-52 ${P(36.6,22).join(' ')})">RED SEA</text><text x="${P(51.6,27.3)[0]}" y="${P(51.6,27.3)[1]}" transform="rotate(-30 ${P(51.6,27.3).join(' ')})">ARABIAN GULF</text></g>
 <g font-family="IBM Plex Mono,monospace" font-size="8" fill="#5a3f26" letter-spacing=".1em" opacity=".75"><text x="${P(48.5,20.2)[0]}" y="${P(48.5,20.2)[1]}">RUB' AL KHALI</text><text x="${P(39.6,28.4)[0]}" y="${P(39.6,28.4)[1]}">AN NAFUD</text><text x="${P(41.6,24.4)[0]}" y="${P(41.6,24.4)[1]}" fill="#2b2420">HARRATS</text></g>`;
-const LAB={wahbah:['e',4],khaybar:['e',-6],dunes:['w',4],rahat:['w',4],hisma:['e',4],hith:['e',10],summan:['e',4],jirsan:['w',12],tuwaiq:['w',-2],sirhan:['e',4]};
-SITES.forEach(s=>{let [x,y]=P(s.lon,s.lat);const col=s.world==='Mars'?'var(--rust)':'var(--regolith)';const e=LAB[s.id][0]==='w';y=y;
- svg+=`<g class="pin" data-id="${s.id}" style="cursor:pointer" tabindex="0" role="button" aria-label="${s.name}"><circle cx="${x}" cy="${y}" r="11" fill="none" stroke="${col}" stroke-width="2" class="halo"/><circle cx="${x}" cy="${y}" r="5" fill="${col}" stroke="#fff" stroke-width="1.5"/><text x="${x+(e?-14:14)}" y="${y+LAB[s.id][1]}" text-anchor="${e?'end':'start'}" class="mlbl">${short(s.name)}</text></g>`});
-svg+=`<g transform="translate(16,428)"><rect width="190" height="30" rx="4" fill="rgba(8,10,31,.72)"/><circle cx="14" cy="15" r="5" fill="var(--regolith)" stroke="#fff"/><text x="24" y="19" class="mlbl small">Moon analog</text><circle cx="104" cy="15" r="5" fill="var(--rust)" stroke="#fff"/><text x="114" y="19" class="mlbl small">Mars analog</text></g>`;
+const LAB={wahbah:['e',4],khaybar:['e',-6],dunes:['w',4],rahat:['w',4],hisma:['e',12],hith:['e',10],summan:['e',4],jirsan:['w',12],tuwaiq:['w',-2],sirhan:['e',4],neom:['e',-10],hatiba:['w',4],atlantis:['w',8]};
+const CATC={moon:'var(--regolith)',mars:'var(--rust)',ocean:'#2ee6c8'},CATH={moon:'#5fb6ff',mars:'#f0485e',ocean:'#2ee6c8'};
+SITES.filter(s=>s.lat!=null).forEach(s=>{let [x,y]=P(s.lon,s.lat);const col=CATC[s.cat];const e=LAB[s.id][0]==='w';const cand=s.group==='candidate';
+ svg+=`<g class="pin" data-id="${s.id}" style="cursor:pointer" tabindex="0" role="button" aria-label="${s.name}"><circle cx="${x}" cy="${y}" r="11" fill="none" stroke="${col}" stroke-width="2" class="halo" stroke-dasharray="${cand?'3 3':'none'}"/><circle cx="${x}" cy="${y}" r="5" fill="${cand?'rgba(8,10,31,.6)':col}" stroke="${cand?col:'#fff'}" stroke-width="1.5"/><text x="${x+(e?-14:14)}" y="${y+LAB[s.id][1]}" text-anchor="${e?'end':'start'}" class="mlbl">${short(s.name)}</text></g>`});
+svg+=`<g transform="translate(12,412)"><rect width="300" height="46" rx="4" fill="rgba(8,10,31,.78)"/><circle cx="14" cy="15" r="5" fill="var(--regolith)" stroke="#fff"/><text x="24" y="19" class="mlbl small">Moon</text><circle cx="72" cy="15" r="5" fill="var(--rust)" stroke="#fff"/><text x="82" y="19" class="mlbl small">Mars</text><circle cx="128" cy="15" r="5" fill="#2ee6c8" stroke="#fff"/><text x="138" y="19" class="mlbl small">Ocean worlds</text><circle cx="14" cy="34" r="5" fill="rgba(8,10,31,.6)" stroke="#fff" stroke-dasharray="2 2"/><text x="24" y="38" class="mlbl small">Candidate, needs verification</text></g>`;
 map.innerHTML=svg;
 
 let lmap=null;
@@ -696,21 +742,24 @@ function tryLeaflet(){if(!window.L)return;const el=document.getElementById('lmap
  const t=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:17,attribution:'Imagery © Esri, Maxar, Earthstar Geographics'}).addTo(lmap);
  lmap.attributionControl.setPrefix('Leaflet');
  let ok=false;t.on('tileload',()=>{if(ok)return;ok=true;el.classList.add('on');document.getElementById('mapmode').textContent='Satellite imagery · click a site to zoom in'});
- SITES.forEach(s=>{const col=s.world==='Mars'?'#f0485e':'#5fb6ff';s._m=L.marker([s.lat,s.lon],{icon:L.divIcon({className:'lpin',html:`<i style="background:${col}"></i><span class="${LAB[s.id][0]==='w'?'w':''}">${short(s.name)}</span>`,iconSize:[0,0]})}).addTo(lmap).on('click',()=>focusSite(s.id))});
+ SITES.filter(s=>s.lat!=null).forEach(s=>{const col=CATH[s.cat];s._m=L.marker([s.lat,s.lon],{icon:L.divIcon({className:'lpin',html:`<i style="background:${col}"></i><span class="${LAB[s.id][0]==='w'?'w':''}">${short(s.name)}</span>`,iconSize:[0,0]})}).addTo(lmap).on('click',()=>focusSite(s.id))});
 }
-function focusSite(id){highlight(id);const s=SITES.find(x=>x.id===id);if(lmap&&document.getElementById('lmap').classList.contains('on'))lmap.flyTo([s.lat,s.lon],s.scale>=20?13:14,{duration:1.6})}
+function focusSite(id){highlight(id);const s=SITES.find(x=>x.id===id);if(s.lat!=null&&lmap&&document.getElementById('lmap').classList.contains('on'))lmap.flyTo([s.lat,s.lon],!s.scale?11:s.scale>=20?13:14,{duration:1.6})}
 function go(id){highlight(id);selectSite(id);document.getElementById('tour').scrollIntoView()}
-const fmt=v=>v===null||v==='pending'?'<span class="na">pending</span>':v;
+const GR={A:'Grade A · direct analog study',B:'Grade B · field or geological study',C:'Grade C · supporting measurements'};
+const CATN={moon:'MOON',mars:'MARS',ocean:'OCEAN WORLDS'};
+const linkS=t=>t.replace(/S(\d\d)/g,'<a href="#ref-S$1">S$1</a>');
 document.getElementById('cards').innerHTML=SITES.map(s=>`<article class="card" data-id="${s.id}" data-group="${s.group}" tabindex="0">
- <div class="t"><b>${s.name}</b><span class="sim"><em>${s.sim}%</em> similarity</span></div>
- <p class="analog"><span class="gtag ${s.group}">${s.group==='known'?'Known analog':'New discovery'}</span> ${s.type} · <span class="mono">${s.lat.toFixed(4)}°N ${s.lon.toFixed(4)}°E</span></p>
- <p class="cmp"><span class="world ${s.world.toLowerCase()}">${s.world.toUpperCase()}</span> ${s.analog}</p>
- <div class="kv"><div><small>Temperature</small><span>${s.climate.t}</span></div><div><small>Humidity</small><span>${s.climate.h}</span></div><div><small>Rainfall / yr</small><span>${s.climate.r}</span></div><div><small>Solar / day</small><span>${s.climate.s}</span></div></div>
- <details><summary>Similarities, differences and tests</summary><p><b>Similar:</b> ${s.simText}</p><p><b>Different:</b> ${s.diff}</p><p><b>Engineering test:</b> ${s.test}</p><p class="muted">NASA source: ${s.nasa} ${s.refs.map(r=>'['+r+']').join('')}</p></details>
- <div><button class="btn small" data-go="${s.id}">Open in 3D</button></div></article>`).join('');
+ <div class="t"><b>${s.name}</b>${s.grade?`<span class="grade g${s.grade}">${GR[s.grade]}</span>`:'<span class="grade gx">Candidate · needs verification</span>'}</div>
+ <p class="analog">${s.type} · <span class="mono">${s.lat!=null?s.lat.toFixed(4)+'°N '+s.lon.toFixed(4)+'°E':'no map point'}</span> <span class="muted">(${linkS(s.prec)})</span></p>
+ <p class="cmp"><span class="world ${s.cat}">${CATN[s.cat]}</span> ${linkS(s.analog)}</p>
+ ${s.measured?`<ul class="meas">${s.measured.map(m=>`<li>${linkS(m)}</li>`).join('')}</ul>`:'<p class="muted" style="font-size:.8rem">No published evidence found yet. Listed so the team can verify it next.</p>'}
+ <details><summary>${s.grade?'Dates, instruments, limits and our proposed use':'Proposed use'}</summary>${s.dates?`<p><b>Dates:</b> ${linkS(s.dates)}</p><p><b>Instruments:</b> ${linkS(s.tools)}</p><p><b>Not proven:</b> ${linkS(s.limits)}</p>`:''}<p><b>Our proposed use:</b> ${s.use}</p>${s.refs?`<p class="muted">Sources: ${s.refs.map(r=>`<a href="#ref-${r}">${r}</a>`).join(', ')}</p>`:''}</details>
+ ${s.terrain?`<div><button class="btn small" data-go="${s.id}">Open in 3D</button></div>`:''}</article>`).join('');
 document.querySelectorAll('#siteFilter button').forEach(b=>b.onclick=()=>{const f=b.dataset.f;document.querySelectorAll('#siteFilter button').forEach(x=>x.setAttribute('aria-pressed',x===b));
  document.querySelectorAll('.card').forEach(c=>c.hidden=f!=='all'&&c.dataset.group!==f);document.querySelectorAll('.pin').forEach(p=>{const g=SITES.find(x=>x.id===p.dataset.id).group;p.style.opacity=f==='all'||g===f?1:.2});SITES.forEach(x=>x._m&&x._m.setOpacity(f==='all'||x.group===f?1:.2))});
-document.getElementById('refList').innerHTML=REFS.map(r=>`<li>${r}</li>`).join('');
+document.getElementById('refList').innerHTML=REFS.map(([c,t,u])=>`<li id="ref-${c}"><span class="mono">${c}</span> ${t} <a href="${u}" target="_blank" rel="noopener">${u.replace(/^https?:\/\//,'')}</a></li>`).join('');
+
 function highlight(id){document.querySelectorAll('.card').forEach(c=>c.dataset.active=c.dataset.id===id);document.querySelectorAll('.pin .halo').forEach(h=>h.setAttribute('r',h.parentNode.dataset.id===id?16:11))}
 document.querySelectorAll('.card,.pin').forEach(el=>{el.addEventListener('click',e=>{if(e.target.closest('[data-go]'))return;focusSite(el.dataset.id)});el.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.target.closest('[data-go]'))focusSite(el.dataset.id)})});
 document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.go)));
@@ -725,9 +774,9 @@ function scoreOf(id){const s=SCORES[id];let num=0,den=0,tot=0;CRITERIA.forEach(c
 function renderReady(){
  const tot=Object.values(W).reduce((a,b)=>a+b,0)||1;
  CRITERIA.forEach(c=>document.getElementById('wv_'+c.k).textContent=Math.round(W[c.k]/tot*100)+'%');
- const rows=SITES.map(s=>({s,...scoreOf(s.id)})).sort((a,b)=>b.v-a.v);
+ const rows=SITES.filter(s=>SCORES[s.id]).map(s=>({s,...scoreOf(s.id)})).sort((a,b)=>b.v-a.v);
  document.getElementById('ranks').innerHTML=rows.map(r=>`<div class="rank"><div class="n">${r.s.name}<small>coverage ${Math.round(r.cov*100)}%</small></div><div class="bar"><i style="width:${r.v}%"></i></div><div class="s">${Math.round(r.v)}</div></div>`).join('');
- document.getElementById('matrix').innerHTML=`<thead><tr><th>Site</th>${CRITERIA.map(c=>`<th>${c.n}</th>`).join('')}</tr></thead><tbody>${SITES.map(s=>`<tr><td>${s.name}</td>${CRITERIA.map(c=>`<td>${SCORES[s.id][c.k]===null?'<span class="na">N/A</span>':SCORES[s.id][c.k]}</td>`).join('')}</tr>`).join('')}</tbody>`;
+ document.getElementById('matrix').innerHTML=`<thead><tr><th>Site</th>${CRITERIA.map(c=>`<th>${c.n}</th>`).join('')}</tr></thead><tbody>${SITES.filter(s=>SCORES[s.id]).map(s=>`<tr><td>${s.name}</td>${CRITERIA.map(c=>`<td>${SCORES[s.id][c.k]===null?'<span class="na">N/A</span>':SCORES[s.id][c.k]}</td>`).join('')}</tr>`).join('')}</tbody>`;
 }
 renderReady();
 
@@ -744,11 +793,11 @@ function renderResults(){
  const out=document.getElementById('results');const fs=[...fac];
  if(fs.length<2){out.innerHTML=`<p class="muted">Select at least two factors. Combined stresses are what single-factor lab tests miss.</p>`;return}
  const sysObj=SYSTEMS.find(s=>s.k===sys);
- const res=SITES.map(s=>{const sf=SITE_FACTORS[s.id];const sc=fs.reduce((a,k)=>a+sf[k],0)/(fs.length*3);const strong=fs.filter(k=>sf[k]>=2);return{s,sc,strong}}).sort((a,b)=>b.sc-a.sc).slice(0,3);
+ const res=SITES.filter(s=>SITE_FACTORS[s.id]).map(s=>{const sf=SITE_FACTORS[s.id];const sc=fs.reduce((a,k)=>a+sf[k],0)/(fs.length*3);const strong=fs.filter(k=>sf[k]>=2);return{s,sc,strong}}).sort((a,b)=>b.sc-a.sc).slice(0,3);
  const seasonal=fs.map(k=>FACTORS.find(f=>f.k===k)).filter(f=>f.month!=='Year-round');
  const win=seasonal.length?seasonal.map(f=>`${f.n}: ${f.month}`).join(' · '):'Any season';
  out.innerHTML=`<p class="mono muted" style="font-size:.75rem">${sysObj.n.toUpperCase()} × ${fs.map(k=>FACTORS.find(f=>f.k===k).n).join(' + ')}</p>`+
- res.map((r,i)=>`<div class="result"><div class="t"><b>${i+1}. ${r.s.name}</b><span class="mono" style="color:${r.sc>.7?'var(--ok)':r.sc>.45?'var(--warn)':'var(--muted)'}">match ${Math.round(r.sc*100)}%</span></div>
+ res.map((r,i)=>`<div class="result"><div class="t"><b>${i+1}. ${r.s.name}${r.s.group==='candidate'?' <span class="muted">(candidate)</span>':''}</b><span class="mono" style="color:${r.sc>.7?'var(--ok)':r.sc>.45?'var(--warn)':'var(--muted)'}">match ${Math.round(r.sc*100)}%</span></div>
  <span class="win">${win}</span><p>Strong here: ${r.strong.length?r.strong.map(k=>FACTORS.find(f=>f.k===k).n.toLowerCase()).join(', '):'none of the selected factors'}.</p></div>`).join('')+
  `<p class="lesson">${fs.slice(0,2).map(k=>LESSON[k]).join(' ')}</p>`;
 }
@@ -756,7 +805,7 @@ renderPills();renderResults();
 
 /* ---------------- 3D TOUR ---------------- */
 const listEl=document.getElementById('sitelist');
-listEl.innerHTML=SITES.map((s,i)=>`<button class="sitebtn" data-id="${s.id}" aria-pressed="${i===0}"><b>${s.name}</b><span>${s.type}</span></button>`).join('');
+listEl.innerHTML=SITES.filter(s=>s.terrain).map((s,i)=>`<button class="sitebtn" data-id="${s.id}" aria-pressed="${i===0}"><b>${s.name}</b><span>${s.type}</span></button>`).join('');
 listEl.querySelectorAll('button').forEach(b=>b.onclick=()=>selectSite(b.dataset.id));
 
 function hash(x,y){let h=x*374761393+y*668265263;h=(h^(h>>13))*1274126177;return((h^(h>>16))>>>0)/4294967295}
@@ -780,13 +829,13 @@ const H={
  khaybar(x,z){let h=ridged(x*.05,z*.05)*1.8+fbm(x*.015,z*.015)*2.5;
   [[0,0,32,14],[-55,40,22,9],[50,-35,26,11],[-40,-55,16,6],[65,50,18,7]].forEach(([cx,cz,R,Hc])=>{const r=Math.hypot(x-cx,z-cz);if(r<R){h+=Hc*Math.pow(1-r/R,1.25);if(r<R*.28)h-=Hc*.35*Math.pow(1-r/(R*.28),1.5)}});return h},
  dunes(x,z){const u=x*.075+2.6*fbm(x*.006,z*.006,3);let h=6.5*Math.pow(.5+.5*Math.sin(u),2.2)+fbm(x*.02,z*.02)*1.2+0.06*Math.sin(x*1.3+z*.4);
-  const r=Math.hypot(x-40,z+30);if(r<6)h-=2*(1-sq(r/6));h+=.8*Math.exp(-sq((r-6)/1.5));return h}
+  for(const [cx,cz,R] of [[40,-30,5.7],[22,-12,3.2]]){const r=Math.hypot(x-cx,z-cz);if(r<R)h-=R*.35*(1-sq(r/R));h+=R*.12*Math.exp(-sq((r-R)/(R*.25)))}return h}
 };
 /* natural palettes: [high/flat, base, steep] */
 const EARTH_COL={wahbah:['#d8c7a6','#9a7a58','#5b4636'],jirsan:['#4a433d','#5e5348','#2b2724'],hith:['#cdb88f','#b09670','#7a6549'],khaybar:['#3d3834','#57493d','#7c4f35'],dunes:['#e2ae72','#cf9358','#b97a43']};
 const ALT_COL={moon:['#a6a6a2','#7d7d78','#4b4b48'],mars:['#c47a4f','#a0583a','#6a3424']};
-const SALT='#ece8de';
-const SKY={earth:{top:'#4f86c6',hor:'#cfe0ea',fog:0xd2dde4,fd:.0022,sun:[1,.96,.88],amb:.5},moon:{top:'#000000',hor:'#000000',fog:0,fd:0,sun:[1,1,1],amb:.04},mars:{top:'#b9845d',hor:'#e3b98f',fog:0xd6a77c,fd:.0035,sun:[1,.9,.78],amb:.42}};
+const SALT='#d8d1c0';
+const SKY={earth:{top:'#4f86c6',hor:'#cfe0ea',fog:0xd2dde4,fd:.0022,sun:[1,.96,.88],amb:.5},moon:{top:'#000000',hor:'#000000',fog:0,fd:0,sun:[1,1,1],amb:.11},mars:{top:'#b9845d',hor:'#e3b98f',fog:0xd6a77c,fd:.0035,sun:[1,.9,.78],amb:.42}};
 const DUSTSKY={top:'#a07a58',hor:'#c9a27a'};
 /* ---------------- ROUTES & VR ---------------- */
 const arc=(cx,cz,r,a0,a1,n)=>Array.from({length:n},(_,i)=>{const a=(a0+(a1-a0)*i/(n-1))*Math.PI/180;return[cx+r*Math.cos(a),cz+r*Math.sin(a)]});
@@ -897,7 +946,7 @@ function colorAttr(g,sk){const pos=g.attributes.position,nrm=g.attributes.normal
 function paint(){
  [[A,leftSkin()],[B,altSkin()]].forEach(([w,sk])=>{if(w.mesh){w.sc.remove(w.mesh);if(w.mesh.geometry!==geoBase)w.mesh.geometry.dispose()}
   const g=w===A?geoBase:geoBase.clone();g.setAttribute('color',colorAttr(g,sk));
-  w.mesh=new THREE.Mesh(g,new THREE.MeshStandardMaterial({vertexColors:true,roughness:.96,metalness:0}));w.mesh.castShadow=true;w.mesh.receiveShadow=true;w.sc.add(w.mesh);applySkin(w,sk)});
+  w.mesh=new THREE.Mesh(g,new THREE.MeshStandardMaterial({vertexColors:true,roughness:.96,metalness:0}));w.mesh.castShadow=true;w.mesh.receiveShadow=true;w.sc.add(w.mesh);if(w.rocks){w.sc.remove(w.rocks);w.rocks.geometry.dispose()}w.rocks=rockMesh(sk);w.sc.add(w.rocks);applySkin(w,sk)});
  const d=document.getElementById('divider');d.hidden=!compare;document.getElementById('divR').textContent=altSkin().toUpperCase();d.style.left=(split*100)+'%';
  updateInfo();updateSun();
 }
@@ -905,7 +954,7 @@ function sunDir(sk,t){let e,phi;if(sk==='moon'){e=1.5;phi=t*Math.PI*2}else{e=Mat
  const er=e*Math.PI/180;return{v:new THREE.Vector3(Math.cos(phi)*Math.cos(er),Math.sin(er),Math.sin(phi)*Math.cos(er)),e,phi}}
 function applySkin(w,sk){w.skin=sk;const k=SKY[sk],dusty=dustOn&&sk!=='moon';
  const s=dusty?DUSTSKY:k;w.sc.background=gradTex(s.top,s.hor);
- const fd=k.fd+(dusty?.016:0);w.sc.fog=fd?new THREE.FogExp2(dusty?0xc4a07a:k.fog,fd):null;
+ const fd=(lookOverride?k.fd*.3:k.fd)+(dusty?.016:0);w.sc.fog=fd?new THREE.FogExp2(dusty?0xc4a07a:k.fog,fd):null;
  w.sun.color.setRGB(...k.sun);w.sun.intensity=(sk==='moon'?2.2:1.5)*(dusty?.45:1);w.hemi.intensity=k.amb*(dusty?1.3:1);
  w.stars.visible=sk==='moon';w.dust.visible=dusty;w.dust.material.color.set(sk==='mars'?0xc98a5c:0xd9b38c)}
 function setSun(w){const d=sunDir(w.skin,sunT).v;w.sun.position.copy(d.clone().multiplyScalar(320));w.sun.target.position.set(0,0,0)}
@@ -924,19 +973,20 @@ let yaw=0,pitch=-.05;const pos3=new THREE.Vector3(-70,0,70);
 function resetCamera(){
  if(mode==='drive'){controls.enabled=false;startDrive();return}
  if(mode==='orbit'){camera.position.set(110,85,110);controls.target.set(0,0,0);controls.enabled=true;controls.update()}
+ else if(lookOverride){controls.enabled=false;const o=lookOverride;pos3.set(o.x,H[cur](o.x,o.z)+.3,o.z);yaw=o.yaw;pitch=o.pitch}
  else{controls.enabled=false;const st={wahbah:[0,-75],jirsan:[-60,20],hith:[0,-22],khaybar:[-40,60],dunes:[-60,0],rahat:[-60,40],hisma:[-80,0],summan:[-30,-30],tuwaiq:[0,-40],sirhan:[-60,0]}[cur];pos3.set(st[0],H[cur](st[0],st[1])+1,st[1]);yaw=Math.atan2(pos3.x,pos3.z);pitch=-.08}}
 function updateInfo(){const s=SITES.find(x=>x.id===cur);const alt=altSkin();
- const p=compare?`Left: the site today. Right: the same ground lit and coloured as ${alt==='moon'?'the lunar south pole':'Mars'}. Drag the divider.`:skin==='earth'?s.simText:`Viewed as ${skin==='moon'?'the Moon (south-pole lighting)':'Mars'}. Analog: ${s.analog}.`;
- document.getElementById('info').innerHTML=`<h3>${s.name}</h3><div class="row"><span>${s.lat.toFixed(2)}°N ${s.lon.toFixed(2)}°E</span><span>${s.climate.t}</span><span>solar ${s.climate.s}</span><span>similarity ${s.sim}%</span></div><p>${p}</p>`;
+ const p=compare?`Left: the site today. Right: the same ground lit and coloured as ${alt==='moon'?'the lunar south pole':'Mars'}. Drag the divider.`:skin==='earth'?s.view:`Viewed as ${skin==='moon'?'the Moon (south-pole lighting)':'Mars'}. Analog: ${s.analog}.`;
+ document.getElementById('info').innerHTML=`<h3>${s.name}</h3><div class="row"><span>${s.lat.toFixed(2)}°N ${s.lon.toFixed(2)}°E</span><span>${s.grade?'Evidence grade '+s.grade:'Candidate'}</span></div><p>${p}</p>`;
  const len=s.scale>=20?1000:s.scale>=10?500:100,px=len/s.scale;document.getElementById('scalebar').innerHTML=`${len>=1000?len/1000+' km':len+' m'}<i style="width:${Math.min(140,px*1.1)}px;margin-left:auto"></i><span style="opacity:.7">1 unit ≈ ${s.scale} m</span>`}
 function syncUI(){listEl.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.id===cur));
  document.querySelectorAll('[data-skin]').forEach(x=>x.setAttribute('aria-pressed',x.dataset.skin===skin));
  document.querySelectorAll('[data-mode]').forEach(x=>x.setAttribute('aria-pressed',x.dataset.mode===mode));viewer.classList.toggle('walking',mode==='walk');document.getElementById('gauge').hidden=mode!=='drive';document.getElementById('driveBtn').textContent=mode==='drive'?(drivePlaying?'Pause drive':'Resume drive'):'Drive selected route';
  document.getElementById('dustBtn').setAttribute('aria-pressed',dustOn);document.getElementById('cmpBtn').setAttribute('aria-pressed',compare);document.getElementById('sun').value=Math.round(sunT*1000)}
-function selectSite(id){cur=id;routeSel=0;syncUI();if(renderer)buildTerrain()}
+function selectSite(id){lookOverride=null;cur=id;routeSel=0;syncUI();if(renderer)buildTerrain()}
 function setTour(o){routeSel=0;cur=o.site??cur;skin=o.skin??skin;dustOn=o.dust??dustOn;compare=o.compare??false;if(o.sun!=null)sunT=o.sun;mode='orbit';syncUI();if(renderer)buildTerrain();document.getElementById('tour').scrollIntoView()}
 document.querySelectorAll('[data-skin]').forEach(b=>b.onclick=()=>{skin=b.dataset.skin;syncUI();if(renderer)paint()});
-document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{mode=b.dataset.mode;syncUI();if(renderer)resetCamera()});
+document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{lookOverride=null;mode=b.dataset.mode;syncUI();if(renderer)resetCamera()});
 document.getElementById('dustBtn').onclick=()=>{dustOn=!dustOn;syncUI();if(renderer)paint()};
 document.getElementById('cmpBtn').onclick=()=>{compare=!compare;syncUI();if(renderer)paint()};
 document.getElementById('sun').addEventListener('input',e=>{sunT=e.target.value/1000;updateSun()});
@@ -964,7 +1014,7 @@ function loop(t=performance.now()){const dt=Math.min(.05,(t-last)/1000);last=t;
   if(keys.a||keys.arrowleft||pad.l)yaw+=1.6*dt;if(keys.d||keys.arrowright||pad.r)yaw-=1.6*dt;
   let mv=0;if(keys.w||keys.arrowup||pad.f)mv=1;if(keys.s||keys.arrowdown||pad.b)mv=-1;
   pos3.x=Math.max(-95,Math.min(95,pos3.x-Math.sin(yaw)*mv*speed*8));pos3.z=Math.max(-95,Math.min(95,pos3.z-Math.cos(yaw)*mv*speed*8));
-  const gy=H[cur](pos3.x,pos3.z)+1.8/s.scale+.25;pos3.y+=(gy-pos3.y)*Math.min(1,dt*10);
+  const gy=H[cur](pos3.x,pos3.z)+1.8/s.scale+.12;pos3.y+=(gy-pos3.y)*Math.min(1,dt*10);
   camera.position.copy(pos3);camera.lookAt(pos3.clone().add(new THREE.Vector3(-Math.sin(yaw)*Math.cos(pitch),Math.sin(pitch),-Math.cos(yaw)*Math.cos(pitch))))}
  if(A.dust.visible||B.dust.visible){const p=dustGeo.attributes.position;for(let i=0;i<p.count;i++){let x=p.getX(i)+dt*18;if(x>110)x=-110;p.setX(i,x)}p.needsUpdate=true}
  const w=viewer.clientWidth,h=viewer.clientHeight;
@@ -979,6 +1029,39 @@ vrBtn.onclick=async()=>{if(!renderer)return;if(renderer.xr.isPresenting){rendere
  try{const ses=await navigator.xr.requestSession('immersive-vr',{optionalFeatures:['local-floor']});enterXR();await renderer.xr.setSession(ses);vrBtn.textContent='Exit VR';ses.addEventListener('end',exitXR)}
  catch(e){document.getElementById('vrNote').textContent='VR could not start on this device: '+e.message}};
 
+/* ---------------- HEADSET PREVIEW ---------------- */
+let hpStep=0,lookOverride=null,motionOn=false,mBase=null;
+const xrOK={v:false};try{navigator.xr&&navigator.xr.isSessionSupported&&navigator.xr.isSessionSupported('immersive-vr').then(o=>xrOK.v=o).catch(()=>{})}catch(e){}
+const HP=[
+ {t:'Saudi crater from the rover',d:'You are on the rim of Al Wahbah at eye level. Drag to look around, or turn on phone motion and move your phone.',sk:'earth'},
+ {t:'Same view on the Moon',d:'The same ground lit like the lunar south pole, with the Sun 1.5° above the horizon. Notice how much of the crater stays in shadow.',sk:'moon'},
+ {t:'In the headset',d:'',sk:'moon'}
+];
+function setLook(sk){cur='wahbah';routeSel=0;skin=sk;compare=false;dustOn=false;mode='walk';sunT=sk==='moon'?.375:.15;lookOverride={x:0,z:57,yaw:.35,pitch:-.38};syncUI();if(renderer){buildTerrain();routeObjs.forEach(o=>o.visible=false)}}
+function renderHP(){const p=document.getElementById('hp'),st=HP[hpStep];
+ document.getElementById('hpSteps').innerHTML=HP.map((h,i)=>`<span class="${i===hpStep?'on':''}">${i+1}. ${h.t}</span>`).join('');
+ document.getElementById('hpText').textContent=hpStep<2?st.d:(xrOK.v?'Press Enter VR to stand on the rim at real scale and look around with your head.':'Open this same link in a VR headset browser, such as Meta Quest, and press Enter VR. Full headset support with base-building tools is our next step.');
+ document.getElementById('hpBack').disabled=hpStep===0;document.getElementById('hpNext').hidden=hpStep===2;document.getElementById('hpVR').hidden=!(hpStep===2&&xrOK.v)}
+function openHP(){hpStep=0;viewer.classList.add('hpon');document.getElementById('hp').hidden=false;document.getElementById('info').hidden=true;setLook('earth');renderHP();document.getElementById('viewer').scrollIntoView({block:'center'})}
+function closeHP(){routeObjs.forEach(o=>o.visible=true);viewer.classList.remove('hpon');document.getElementById('hp').hidden=true;document.getElementById('info').hidden=false;lookOverride=null;motionOn=false;document.getElementById('hpMotion').textContent='Use phone motion'}
+document.getElementById('hpBtn').onclick=openHP;document.getElementById('heroHp').onclick=openHP;
+document.getElementById('hpClose').onclick=closeHP;
+document.getElementById('hpNext').onclick=()=>{hpStep=Math.min(2,hpStep+1);setLook(HP[hpStep].sk);renderHP()};
+document.getElementById('hpBack').onclick=()=>{hpStep=Math.max(0,hpStep-1);setLook(HP[hpStep].sk);renderHP()};
+document.getElementById('hpVR').onclick=()=>document.getElementById('vrBtn').click();
+const hpMotion=document.getElementById('hpMotion');
+if('DeviceOrientationEvent' in window&&matchMedia('(pointer:coarse)').matches)hpMotion.hidden=false;
+hpMotion.onclick=async()=>{try{if(typeof DeviceOrientationEvent.requestPermission==='function'){const r=await DeviceOrientationEvent.requestPermission();if(r!=='granted')throw new Error('denied')}motionOn=!motionOn;mBase=null;hpMotion.textContent=motionOn?'Motion on':'Use phone motion'}catch(e){document.getElementById('hpText').textContent='Phone motion is not available here. Drag to look around instead.'}};
+addEventListener('deviceorientation',e=>{if(!motionOn||mode!=='walk'||e.alpha==null)return;if(!mBase)mBase={a:e.alpha,yaw};yaw=mBase.yaw+(e.alpha-mBase.a)*Math.PI/180;pitch=Math.max(-1.2,Math.min(1,((e.beta||90)-90)*Math.PI/180))});
+function rockMesh(sk){const s=SITES.find(x=>x.id===cur),f=H[cur],n={dunes:350,sirhan:200,summan:1500,hith:1500}[cur]??2600;
+ const pal=sk==='earth'?EARTH_COL[cur]:ALT_COL[sk];
+ const m=new THREE.InstancedMesh(new THREE.DodecahedronGeometry(1,0),new THREE.MeshStandardMaterial({color:new THREE.Color(pal[2]).lerp(new THREE.Color(pal[1]),.35),roughness:1,flatShading:true}),n);
+ const d=new THREE.Object3D();
+ for(let i=0;i<n;i++){const x=(hash(i,31)*2-1)*96,z=(hash(i,77)*2-1)*96,sz=(.4+Math.pow(hash(i,5),3)*3.6)/s.scale;
+  d.position.set(x,f(x,z)+sz*.25,z);d.rotation.set(hash(i,9)*6,hash(i,11)*6,hash(i,13)*6);d.scale.set(sz*(.8+hash(i,3)*.6),sz*(.5+hash(i,4)*.4),sz);d.updateMatrix();m.setMatrixAt(i,d.matrix)}
+ if(lookOverride){const o=lookOverride,c=new THREE.InstancedMesh(m.geometry,m.material,1800);for(let i=0;i<1800;i++){const a=hash(i,41)*6.283,r=1.5+Math.pow(hash(i,43),1.5)*16,x=o.x+Math.sin(a)*r,z=o.z+Math.cos(a)*r,sz=(.25+Math.pow(hash(i,47),3)*2.2)/s.scale;d.position.set(x,f(x,z)+sz*.25,z);d.rotation.set(hash(i,49)*6,hash(i,51)*6,0);d.scale.set(sz,sz*.6,sz*.9);d.updateMatrix();c.setMatrixAt(i,d.matrix)}c.castShadow=true;c.receiveShadow=true;const g=new THREE.Group();g.add(m);g.add(c);g.geometry=m.geometry;return g}
+ m.castShadow=true;m.receiveShadow=true;return m}
+
 /* ---------------- MISSION REPLAY ---------------- */
 const REPLAY=[
  {name:'Opportunity',world:'Mars',metric:'Solar array energy (Wh per sol)',max:700,
@@ -988,7 +1071,7 @@ const REPLAY=[
    ['10 Jun 2018',22,'Too little power to stay awake. The rover sends its last signal.'],
    ['13 Feb 2019',0,'After more than 1,000 recovery commands, NASA ends the mission.']],
   fix:'Dust-tolerant power: panel coatings, cleaning and battery margin under heavy, long-lasting dust.',
-  test:{site:'hisma',skin:'mars',dust:true,sun:.5},where:'Hisma Plateau red terrain',when:'Mar – May (shamal dust season)',
+  test:{site:'dunes',skin:'mars',dust:true,sun:.5},where:'Rub\' al Khali, Wabar area',when:'Indicative: Mar – May dust season',
   src:'NASA/JPL Opportunity mission updates, 2018–2019'},
  {name:'InSight',world:'Mars',metric:'Daily energy (Wh per sol)',max:5500,
   steps:[['Nov 2018',5000,'Lands on Elysium Planitia. Solar panels are clean.'],
@@ -997,7 +1080,7 @@ const REPLAY=[
    ['May 2022',500,'About a tenth of the power at landing. Only the seismometer keeps running.'],
    ['Dec 2022',0,'Two missed contacts. NASA declares the mission over.']],
   fix:'Self-cleaning panels and tilt strategies, tested under months of dust deposition.',
-  test:{site:'dunes',skin:'mars',dust:true,sun:.3},where:'Rub\' al Khali dunes',when:'May – Sep (driest months) for long exposure',
+  test:{site:'dunes',skin:'mars',dust:true,sun:.3},where:'Rub\' al Khali, Wabar area',when:'Indicative: May – Sep, the driest months',
   src:'NASA/JPL InSight mission updates, 2018–2022'},
  {name:'Spirit',world:'Mars',metric:null,
   steps:[['2006',null,'The right-front wheel stops working. Spirit drives backwards, dragging it.'],
@@ -1006,7 +1089,7 @@ const REPLAY=[
    ['Jan 2010',null,'NASA re-designates Spirit as a stationary science platform.'],
    ['May 2011',null,'No contact since March 2010. The mission ends.']],
   fix:'Wheel design and traction control in loose, crusted sand on slopes.',
-  test:{site:'dunes',skin:'mars',dust:false,sun:.4},where:'Rub\' al Khali soft sand',when:'Year-round; Nov – Feb for cooler field work',
+  test:{site:'dunes',skin:'mars',dust:false,sun:.4},where:'Rub\' al Khali soft sand; soil data from Eastern Province sands [S04]',when:'Indicative: Nov – Feb for cooler field work',
   src:'NASA/JPL Spirit mission updates, 2009–2011'},
  {name:'Curiosity',world:'Mars',metric:null,
   steps:[['Aug 2012',null,'Lands in Gale crater on six aluminium wheels.'],
@@ -1015,7 +1098,7 @@ const REPLAY=[
    ['2017',null,'New traction-control software reduces the load on the wheels.'],
    ['Today',null,'Still driving. Wear is managed by route planning.']],
   fix:'Wheel wear and route-planning tests on sharp basalt and rock fields.',
-  test:{site:'rahat',skin:'mars',dust:false,sun:.35},where:'Harrat Rahat sharp basalt',when:'Year-round; Nov – Feb avoids peak heat',
+  test:{site:'rahat',skin:'mars',dust:false,sun:.35},where:'Harrat Rahat sharp basalt',when:'Indicative: Nov – Feb avoids peak heat',
   src:'NASA/JPL Curiosity mission updates, 2013–2017'}
 ];
 let rpM=0,rpS=0,rpTimer=null;
