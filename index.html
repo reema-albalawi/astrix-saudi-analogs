@@ -257,6 +257,34 @@ footer{border-top:1px solid var(--line);padding-block:28px 40px;font-size:.8rem;
 .lpin i{position:absolute;left:-6px;top:-6px;width:12px;height:12px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 4px rgba(0,0,0,.25)}
 .lpin span{position:absolute;left:10px;top:-8px;white-space:nowrap;font-size:11px;font-weight:600;color:#fff;text-shadow:0 1px 3px #000,0 0 6px #000}
 
+.gauge{position:absolute;right:12px;bottom:64px;display:grid;gap:2px;padding:10px 12px;border-radius:5px;background:rgba(8,10,31,.78);border:1px solid rgba(255,255,255,.14);font-family:var(--mono);font-size:.72rem;color:#d7d9ee;min-width:170px}
+.gauge b{font-weight:500;letter-spacing:.08em;font-size:.66rem;color:#aab}
+.gauge em{font-style:normal;font-family:var(--display);font-size:1.25rem;color:var(--ok)}
+.gauge.warn em{color:var(--warn)}.gauge.bad em{color:var(--bad)}
+.routes{margin-top:12px;padding:14px;background:var(--basalt);border:1px solid var(--line);border-radius:6px;display:grid;gap:12px}
+.rhead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.rbtns{display:flex;gap:8px;flex-wrap:wrap}
+.rlist{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.route{all:unset;cursor:pointer;display:grid;grid-template-columns:auto 1fr;gap:4px 10px;align-items:start;padding:10px 12px;border:1px solid var(--line);border-radius:5px;min-width:0}
+.route[aria-pressed="true"]{border-color:#2ee6c8;box-shadow:inset 0 0 0 1px #2ee6c8}
+.route:focus-visible{outline:2px solid var(--sand);outline-offset:2px}
+.route .rl{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--panel);font-family:var(--display);font-size:.72rem;grid-row:span 2}
+.route[aria-pressed="true"] .rl{background:#2ee6c8;color:var(--ink)}
+.route .rn{font-size:.86rem;display:grid;gap:2px;min-width:0}
+.route .rn small{font-size:.7rem;color:var(--muted)}
+.route .chip{grid-column:2}
+.rnote{font-size:.76rem}
+@media (max-width:760px){.rlist{grid-template-columns:1fr}}
+.sim{font-family:var(--mono);font-size:.68rem;color:var(--muted);white-space:nowrap}.sim em{font-style:normal;font-family:var(--display);font-size:1rem;color:var(--sand)}
+.gtag{font-family:var(--mono);font-size:.62rem;letter-spacing:.06em;padding:1px 6px;border-radius:3px;margin-right:4px;border:1px solid}
+.gtag.known{color:var(--regolith)}.gtag.new{color:var(--rust)}
+.cmp{font-size:.82rem}
+.card details{font-size:.82rem;color:#cfd1ea}.card summary{cursor:pointer;color:var(--sand);font-size:.78rem}
+.card details p{margin-top:6px}
+#siteFilter{margin-top:6px;align-self:flex-start}
+.refs{margin:0;padding-left:22px;display:grid;gap:6px;font-size:.88rem;color:#cfd1ea;max-width:80ch}
+.lpin span.w{left:auto;right:10px}
+@media (min-width:861px){.mapbox{position:sticky;top:72px}}
 </style>
 </head>
 <body>
@@ -281,7 +309,7 @@ footer{border-top:1px solid var(--line);padding-block:28px 40px;font-size:.8rem;
     <span class="tag">CHALLENGE</span>
     <p>Identify Earth locations that analog the permanent Moon base locations and Mars.</p>
     <div class="mono muted" style="font-size:.78rem;display:grid;gap:4px">
-      <span>5 candidate sites · 3 systems · 10 mission lessons</span>
+      <span>10 Saudi sites · 3 systems · 9 mission lessons</span>
       <span>Data: NASADEM · MODIS · MERRA-2 · LRO · HiRISE</span>
     </div>
   </aside>
@@ -308,6 +336,7 @@ footer{border-top:1px solid var(--line);padding-block:28px 40px;font-size:.8rem;
           <div class="seg" role="group" aria-label="Camera">
             <button data-mode="orbit" aria-pressed="true">Orbit</button>
             <button data-mode="walk" aria-pressed="false">Walk</button>
+            <button data-mode="drive" aria-pressed="false">Drive</button>
           </div>
           <div class="seg"><button id="cmpBtn" aria-pressed="false">Compare</button><button id="dustBtn" aria-pressed="false">Dust storm</button></div>
         </div>
@@ -320,11 +349,17 @@ footer{border-top:1px solid var(--line);padding-block:28px 40px;font-size:.8rem;
         <button class="rt" data-k="r" aria-label="Turn right">▶</button>
       </div>
       <div class="scalebar" id="scalebar"></div>
+      <div class="gauge" id="gauge" hidden></div>
       <div class="divider" id="divider" hidden tabindex="0" role="slider" aria-label="Comparison divider"><span class="l">EARTH</span><span class="r" id="divR">MOON</span><i></i><b aria-hidden="true">⇆</b></div>
     </div>
   </div>
   <div class="sunbar"><label for="sun">Sun</label><input type="range" id="sun" min="0" max="1000" value="320"><span id="sunLbl" class="mono"></span><span id="shadeLbl" class="mono"></span></div>
-  <p class="hint">Compare splits the view: the site on Earth beside the same ground as the Moon or Mars. Move the Sun to see how much ground falls into shadow; on the Moon the Sun skims 1.5° above the horizon, as at the south-pole base sites. Orbit: drag to rotate, scroll or pinch to zoom. Walk: W A S D or arrow keys, drag to look. Terrain is a procedural model shaped from published dimensions and will be replaced with NASADEM elevation.</p>
+  <div class="routes">
+    <div class="rhead"><span class="eyebrow">Rover routes · VR preview</span><div class="rbtns"><button class="btn small" id="driveBtn">Drive selected route</button><button class="btn small primary" id="vrBtn" hidden>Enter VR</button></div></div>
+    <div class="rlist" id="rlist"></div>
+    <p class="muted rnote" id="vrNote">Pick a route to see its length and slope. Turn on Compare and press Drive to ride the same route on Earth and on the Moon or Mars at once. On a VR headset browser with WebXR, an Enter VR button appears and puts you on the route at real scale. Full headset support with base-building tools is our next step. Slope ratings are illustrative until our rover mobility criterion is final.</p>
+  </div>
+  <p class="hint">Compare splits the view: the site on Earth beside the same ground as the Moon or Mars. Move the Sun to see how much ground falls into shadow; on the Moon the Sun skims 1.5° above the horizon, as at the south-pole base sites. Orbit: drag to rotate, scroll or pinch to zoom. Walk: W A S D or arrow keys, drag to look. Drive: ride along the selected rover route. Terrain is a procedural model shaped from published dimensions and will be replaced with NASADEM elevation.</p>
 </section>
 
 <section id="problem">
@@ -359,8 +394,9 @@ footer{border-top:1px solid var(--line);padding-block:28px 40px;font-size:.8rem;
 <section id="sites">
   <div class="sechead">
     <p class="eyebrow">Candidate analog sites</p>
-    <h2>Five Saudi landscapes, five off-world counterparts.</h2>
-    <p>Values marked <span class="na">pending</span> are still being measured from NASADEM. We show the gap instead of guessing a number.</p>
+    <h2>Ten Saudi landscapes, ten off-world counterparts.</h2>
+    <p>Five are known analogs documented in NASA sources. Five are new candidates our team identified. Similarity is the team's estimate from published comparisons; climate figures come from NASA data.</p>
+    <div class="seg" id="siteFilter" role="group" aria-label="Filter sites"><button data-f="all" aria-pressed="true">All 10</button><button data-f="known" aria-pressed="false">Known analogs</button><button data-f="new" aria-pressed="false">New discoveries</button></div>
   </div>
   <div class="mapgrid">
     <div class="mapbox"><div class="mapframe"><svg id="map" viewBox="0 0 520 470" role="img" aria-label="Relief map of Saudi Arabia with candidate sites"></svg><div id="lmap" class="lmap"></div></div><p class="mono muted" id="mapmode" style="font-size:.7rem;margin-top:8px">Illustrated relief map · satellite imagery loads on the public site</p></div>
@@ -452,11 +488,16 @@ footer{border-top:1px solid var(--line);padding-block:28px 40px;font-size:.8rem;
   </div>
   <div class="crit">
     <a class="cr" href="#replay"><span class="ci" style="--c:var(--regolith)">01</span><b>Impact</b><p>Points engineers to a real Saudi site and season for tests that could have helped Opportunity, InSight and Spirit.</p><span class="go">See Mission replay</span></a>
-    <a class="cr" href="#tour"><span class="ci" style="--c:var(--sand)">02</span><b>Creativity</b><p>The same ground seen as Earth, Moon and Mars, side by side, with a movable Sun. Failures are linked to places, not only to terrain.</p><span class="go">Try Compare</span></a>
+    <a class="cr" href="#tour"><span class="ci" style="--c:var(--sand)">02</span><b>Creativity</b><p>The same ground seen as Earth, Moon and Mars, side by side, with a movable Sun and a rover-route VR preview. Failures are linked to places, not only to terrain.</p><span class="go">Try Compare</span></a>
     <a class="cr" href="#scale"><span class="ci" style="--c:var(--rust)">03</span><b>Validity</b><p>NASA datasets, true-scale comparisons, missing values marked as pending, and stated limits of the analog.</p><span class="go">See To scale</span></a>
     <a class="cr" href="#sites"><span class="ci" style="--c:var(--regolith)">04</span><b>Relevance</b><p>Answers the challenge directly: Saudi analogs for lunar south-pole base sites and for Mars, with low-angle polar lighting.</p><span class="go">See the sites</span></a>
     <a class="cr" href="#top"><span class="ci" style="--c:var(--sand)">05</span><b>Presentation</b><p>One public link that runs in any browser and walks from problem to recommended test in under five minutes.</p><span class="go">Back to top</span></a>
   </div>
+</section>
+
+<section id="refs">
+  <div class="sechead"><p class="eyebrow">References</p><h2>NASA sources</h2></div>
+  <ol class="refs" id="refList"></ol>
 </section>
 
 <section id="team">
@@ -486,27 +527,68 @@ footer{border-top:1px solid var(--line);padding-block:28px 40px;font-size:.8rem;
 <script>
 /* ---------------- DATA ---------------- */
 const SITES=[
- {id:'wahbah',name:'Al Wahbah Crater',ar:'فوهة الوعبة',type:'Volcanic maar crater',region:'Harrat Kishb, Makkah Province',lat:22.90,lon:41.14,
-  diam:'≈2.2 km',depth:'≈250 m',slope:null,elev:'≈1,000 m',
-  analog:'Lunar simple craters; south-pole crater rims (Moon) · maar-like pits (Mars)',world:'Moon',scale:20,
-  note:'Steep walls and a white salt floor. A stand-in for crater-rim base sites near the lunar south pole.'},
- {id:'jirsan',name:'Umm Jirsan Lava Tube',ar:'كهف أم جرسان',type:'Lava tube & collapse skylights',region:'Harrat Khaybar, Madinah Province',lat:25.58,lon:39.87,
-  diam:'≈1.5 km long',depth:'≈12 m high',slope:null,elev:'≈1,100 m',
-  analog:'Marius Hills skylight (Moon) · Arsia Mons cave pits (Mars)',world:'Moon',scale:10,
-  note:'Lava tubes could shelter astronauts from radiation and temperature swings. Collapsed roof sections act as skylights.'},
- {id:'hith',name:'Dahl Hith Sinkhole',ar:'دحل هيت',type:'Karst collapse sinkhole',region:'Near Al-Kharj, Riyadh Province',lat:24.45,lon:47.35,
-  diam:'pending',depth:'≈100 m',slope:null,elev:'pending',
-  analog:'Collapse pits and pit chains (Mars)',world:'Mars',scale:2,
-  note:'A narrow, vertical-walled collapse in layered limestone. Coordinates approximate until confirmed.'},
- {id:'khaybar',name:'Harrat Khaybar Cones',ar:'حرة خيبر',type:'Basaltic volcanic field',region:'Jabal Qidr area, Madinah Province',lat:25.72,lon:39.95,
-  diam:'pending',depth:'pending',slope:null,elev:'≈1,700 m',
-  analog:'Lunar mare basalt plains (Moon) · Tharsis cinder cones (Mars)',world:'Mars',scale:30,
-  note:'Dark basalt flows and scoria cones. Rough, rocky ground for wheel-damage and navigation tests.'},
- {id:'dunes',name:'Rub\' al Khali Dunes',ar:'الربع الخالي',type:'Linear dune field',region:'Near Wabar, Eastern Province',lat:21.50,lon:50.47,
-  diam:'n/a',depth:'n/a',slope:null,elev:'≈100 m',
-  analog:'Martian dune fields and dust-storm regions (Mars)',world:'Mars',scale:10,
-  note:'Extreme heat, dryness and dust. The closest Earth match to the conditions that ended Opportunity and InSight.'}
+ {id:'wahbah',group:'known',name:'Al Wahbah Crater',type:'Volcanic maar crater',lat:22.9090,lon:41.1440,world:'Moon',sim:92,scale:20,
+  analog:'Large lunar craters (Shackleton, Copernicus) and deep Martian craters',
+  simText:'Steep crater walls like lunar craters, and a low floor with sharp day–night temperature swings.',
+  diff:'The floor is white evaporite salt; lunar and Martian craters are covered in regolith instead.',
+  test:'Rock-wall stability, rover handling on sharp rims, thermal contrast.',
+  climate:{t:'10 – 42 °C',h:'15 – 30 %',r:'< 70 mm',s:'> 6.5 kWh/m²'},nasa:'SRTM, Planetary Analog Explorer',refs:[3,2]},
+ {id:'khaybar',group:'known',name:'Harrat Khaybar',type:'Basaltic volcanic field',lat:25.5000,lon:39.9000,world:'Mars',sim:89,scale:30,
+  analog:'Martian volcanic provinces and old lunar basalt basins',
+  simText:'Dark basalt interleaved with pale volcanic rock, like the Tharsis highlands on Mars.',
+  diff:'Sparse vegetation grows around Khaybar; the Moon and Mars have none.',
+  test:'Effect of dust and volcanic ash on solar panels; heat resistance of materials.',
+  climate:{t:'5 – 44 °C',h:'20 – 35 %',r:'50 – 90 mm',s:'6.8 kWh/m²'},nasa:'NASA Earth Observatory',refs:[4,5]},
+ {id:'dunes',group:'known',name:"Rub' al Khali",type:'Linear dunes and sabkhas',lat:20.0000,lon:50.0000,world:'Mars',sim:94,scale:10,
+  analog:'Martian dunes and salt deposits (Meridiani Planum)',
+  simText:'Linear dunes and evaporite sabkha flats that closely match the Meridiani basin on Mars.',
+  diff:'A thick atmosphere at normal pressure, unlike the thin Martian air.',
+  test:'Rover mobility in soft sand; dust build-up on solar panels.',
+  climate:{t:'8 – 50 °C',h:'10 – 40 % (variable)',r:'< 30 mm',s:'> 7.2 kWh/m²'},nasa:'NTRS: Rub\' al Khali interdune sabkha analog',refs:[6]},
+ {id:'rahat',group:'known',name:'Harrat Rahat',type:'Broken basalt lava field',lat:23.0800,lon:39.7800,world:'Mars',sim:91,scale:20,
+  analog:'Martian volcanic plains (Tharsis, Elysium) and broken basalt terrain',
+  simText:'Sharp, irregular rocks that wear tyres, like the terrain that damaged Curiosity\'s wheels.',
+  diff:'Recent documented volcanic activity, while lunar volcanoes are long extinct.',
+  test:'Wheel and tyre durability against sharp rock.',
+  climate:{t:'12 – 41 °C',h:'25 – 40 %',r:'80 – 120 mm',s:'6.3 kWh/m²'},nasa:'SRTM',refs:[3]},
+ {id:'hisma',group:'known',name:'Hisma Plateau',type:'Red sandstone mesas (near Wadi Rum)',lat:28.7500,lon:35.8000,world:'Mars',sim:95,scale:15,
+  analog:'Valles Marineris and the slopes of Gale crater',
+  simText:'Red sand slopes and iron-oxide coated rock that look like Martian landscapes.',
+  diff:'Narrow rock corridors channel winds at Earth pressure, very different from thin Martian air.',
+  test:'Visual navigation on red terrain; effect of dust storms on power.',
+  climate:{t:'4 – 39 °C',h:'20 – 35 %',r:'< 50 mm',s:'6.6 kWh/m²'},nasa:'Planetary Analog Explorer',refs:[2]},
+ {id:'hith',group:'new',name:'Dahl Hith',type:'Karst collapse sinkhole',lat:24.4847,lon:46.9994,world:'Mars',sim:88,scale:2,
+  analog:'Martian collapse pits (Arsia Mons) and deep sulphur-rich settings',
+  simText:'Steep drop into dark caves, with limestone and sulphur features like Martian cave settings.',
+  diff:'An underground pool sits on the floor; Martian pits are completely dry.',
+  test:'Tethered descent systems; stability of pit walls and slopes.',
+  climate:{t:'22 – 43 °C',h:'up to 60 % near water',r:'none inside',s:'≈ 0 on the floor'},nasa:'SRTM',refs:[3]},
+ {id:'summan',group:'new',name:'As-Summan Dahls',type:'Karst plateau with vertical openings',lat:26.5000,lon:47.5000,world:'Moon',sim:93,scale:3,
+  analog:'Lunar skylights (Marius Hills) and collapse pits',
+  simText:'Vertical openings in karst rock lead to radiation-sheltered spaces, like lava-tube skylights.',
+  diff:'Sedimentary limestone, while lunar and Martian skylights are volcanic.',
+  test:'Navigation and fall avoidance with LIDAR; wireless links and radiation shielding underground.',
+  climate:{t:'18 – 45 °C',h:'20 – 45 %',r:'< 60 mm',s:'none under the roof'},nasa:'NTRS: planetary caves and analogs',refs:[7]},
+ {id:'jirsan',group:'new',name:'Umm Jirsan Cave',type:'Lava tube',lat:25.5881,lon:39.7575,world:'Moon',sim:96,scale:10,
+  analog:'Lunar and Martian lava tubes (e.g. Mare Tranquillitatis)',
+  simText:'A thick, solid basalt roof, the kind of lava tube that could shelter astronauts from meteorites and radiation.',
+  diff:'Traces of life (bones and droppings) that lifeless lunar tubes do not have.',
+  test:'Permanent habitat design, natural thermal insulation and radiation shielding.',
+  climate:{t:'20 – 23 °C (stable)',h:'30 – 45 %',r:'none inside',s:'0 % inside'},nasa:'NASA Earth Observatory',refs:[4]},
+ {id:'tuwaiq',group:'new',name:'Edge of the World',type:'Jabal Tuwaiq escarpment',lat:24.9450,lon:45.9910,world:'Moon',sim:87,scale:10,
+  analog:'Rims of deep lunar craters (Shackleton rim) and Martian canyon cliffs',
+  simText:'A high, exposed cliff for testing LIDAR remote sensing and tilt measurement.',
+  diff:'Chalky limestone, unlike the basalt of lunar crater rims.',
+  test:'3D LIDAR mapping and line-of-sight communication.',
+  climate:{t:'7 – 42 °C',h:'15 – 30 %',r:'< 60 mm',s:'6.7 kWh/m²'},nasa:'Planetary Analog Explorer, SRTM',refs:[2,3]},
+ {id:'sirhan',group:'new',name:'Wadi As-Sirhan Basin',type:'Dry sedimentary basin floor',lat:30.5000,lon:38.0000,world:'Mars',sim:90,scale:1,
+  analog:'Ancient Martian sedimentary basins (Jezero crater and landing zones)',
+  simText:'Cracked mud surfaces from long dry spells, like the Jezero landing environment.',
+  diff:'Light winter moisture at times; Martian basin floors have been dry for billions of years.',
+  test:'Precision landing (EDL) simulation; thermal tests on electronics and panels.',
+  climate:{t:'−2 – 41 °C',h:'20 – 50 %',r:'40 – 70 mm',s:'6.1 kWh/m²'},nasa:'NTRS, Planetary Analogs Portal',refs:[1,7]}
 ];
+const REFS=['NASA Science Planetary Analogs Portal','Planetary Analog Explorer (side-by-side Earth and Moon/Mars comparisons)','NASADEM & SRTM Digital Elevation Data','NASA Earth Observatory: White and Black Volcanoes of Saudi Arabia','NASA Earth Observatory: Harrat Khaybar Volcanic Field',"NTRS: Rub' al Khali Interdune Sabkha Analog for Present Mars",'NASA Technical Reports Server (NTRS): Planetary Caves & Exploration Analogs'];
 
 const MISSIONS=[
  ['Opportunity','2018–2019','mars','A global dust storm blocked the Sun and drained power.','Rover lost','bad'],
@@ -527,10 +609,15 @@ const CRITERIA=[
 // sample scores 0–100 (null = no data yet)
 const SCORES={
  wahbah:{stab:62,mob:55,therm:70,light:74,dust:48,shelter:40},
- jirsan:{stab:null,mob:46,therm:58,light:30,dust:35,shelter:88},
- hith:{stab:41,mob:null,therm:52,light:22,dust:30,shelter:60},
  khaybar:{stab:70,mob:38,therm:66,light:80,dust:40,shelter:null},
- dunes:{stab:null,mob:28,therm:92,light:95,dust:94,shelter:10}
+ dunes:{stab:null,mob:28,therm:92,light:95,dust:94,shelter:10},
+ rahat:{stab:66,mob:30,therm:64,light:78,dust:42,shelter:null},
+ hisma:{stab:58,mob:50,therm:60,light:82,dust:80,shelter:35},
+ hith:{stab:41,mob:null,therm:52,light:22,dust:30,shelter:60},
+ summan:{stab:45,mob:null,therm:55,light:20,dust:38,shelter:82},
+ jirsan:{stab:null,mob:46,therm:58,light:30,dust:35,shelter:88},
+ tuwaiq:{stab:52,mob:40,therm:62,light:76,dust:45,shelter:null},
+ sirhan:{stab:null,mob:72,therm:74,light:85,dust:60,shelter:5}
 };
 
 const SYSTEMS=[
@@ -550,10 +637,15 @@ const FACTORS=[
 ];
 const SITE_FACTORS={
  wahbah:{dust:2,heat:2,dry:2,cold:3,light:3,soft:1,rocks:2,slope:3},
- jirsan:{dust:1,heat:2,dry:2,cold:2,light:1,soft:0,rocks:3,slope:2},
- hith:{dust:2,heat:2,dry:2,cold:2,light:2,soft:1,rocks:2,slope:3},
- khaybar:{dust:1,heat:2,dry:2,cold:3,light:2,soft:1,rocks:3,slope:2},
- dunes:{dust:3,heat:3,dry:3,cold:1,light:1,soft:3,rocks:0,slope:1}
+ khaybar:{dust:2,heat:2,dry:2,cold:3,light:2,soft:1,rocks:3,slope:2},
+ dunes:{dust:3,heat:3,dry:3,cold:1,light:1,soft:3,rocks:0,slope:1},
+ rahat:{dust:1,heat:2,dry:2,cold:2,light:2,soft:0,rocks:3,slope:1},
+ hisma:{dust:3,heat:2,dry:2,cold:2,light:2,soft:2,rocks:2,slope:2},
+ hith:{dust:2,heat:2,dry:1,cold:1,light:2,soft:1,rocks:2,slope:3},
+ summan:{dust:2,heat:3,dry:2,cold:2,light:1,soft:0,rocks:2,slope:3},
+ jirsan:{dust:1,heat:1,dry:1,cold:1,light:1,soft:0,rocks:3,slope:2},
+ tuwaiq:{dust:2,heat:2,dry:2,cold:2,light:3,soft:0,rocks:2,slope:3},
+ sirhan:{dust:2,heat:2,dry:2,cold:3,light:2,soft:1,rocks:0,slope:0}
 };
 const LESSON={dust:'Opportunity and InSight both lost power to dust.',heat:'Thermal cycling degrades electronics and seals.',dry:'Dry, static-prone dust clings to surfaces like on Apollo.',cold:'Phoenix and Surveyor 1 ended in cold and darkness.',light:'Long shadows matter for lunar south-pole bases.',soft:'Spirit ended its mission stuck in soft soil.',rocks:'Curiosity\'s wheels were punctured by sharp rocks.',slope:'Crater-wall traverses stress traction and stability.'};
 
@@ -569,7 +661,7 @@ const HARRATS=[[39.9,23.0,.45,1.3],[40.1,25.6,.6,.7],[41.3,22.9,.35,.45],[37.6,2
 const P=(lon,lat)=>[(lon-34)*21.38+18,(32.8-lat)*23.4+14];
 const pts=a=>a.map(p=>P(...p).map(v=>v.toFixed(1)).join(',')).join(' ');
 const CITIES=[['Riyadh',46.72,24.69],['Jeddah',39.17,21.54],['Madinah',39.6,24.47],['Dammam',50.1,26.43]];
-const short=n=>n.replace(/ (Crater|Lava Tube|Sinkhole|Cones|Dunes)$/,'');
+const short=n=>n.replace(/ (Crater|Cave|Plateau|Basin|Dahls)$/,'');
 const map=document.getElementById('map');
 let svg=`<defs>
 <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1d4f73"/><stop offset="1" stop-color="#123a5a"/></linearGradient>
@@ -592,9 +684,9 @@ let svg=`<defs>
 <polygon points="${pts(BORDER)}" fill="none" stroke="#fff" stroke-opacity=".85" stroke-width="1.2" stroke-dasharray="5 3"/>
 <g font-family="IBM Plex Mono,monospace" font-size="9" fill="#cfe3f3" letter-spacing=".12em" opacity=".8"><text x="${P(36.6,22)[0]}" y="${P(36.6,22)[1]}" transform="rotate(-52 ${P(36.6,22).join(' ')})">RED SEA</text><text x="${P(51.6,27.3)[0]}" y="${P(51.6,27.3)[1]}" transform="rotate(-30 ${P(51.6,27.3).join(' ')})">ARABIAN GULF</text></g>
 <g font-family="IBM Plex Mono,monospace" font-size="8" fill="#5a3f26" letter-spacing=".1em" opacity=".75"><text x="${P(48.5,20.2)[0]}" y="${P(48.5,20.2)[1]}">RUB' AL KHALI</text><text x="${P(39.6,28.4)[0]}" y="${P(39.6,28.4)[1]}">AN NAFUD</text><text x="${P(41.6,24.4)[0]}" y="${P(41.6,24.4)[1]}" fill="#2b2420">HARRATS</text></g>`;
-CITIES.forEach(c=>{const [x,y]=P(c[1],c[2]);svg+=`<rect x="${x-2}" y="${y-2}" width="4" height="4" fill="#fff"/><text x="${x+6}" y="${y+3}" class="mlbl small">${c[0]}</text>`});
-SITES.forEach(s=>{const [x,y]=P(s.lon,s.lat);const col=s.world==='Mars'?'var(--rust)':'var(--regolith)';const e=s.lon>48;
- svg+=`<g class="pin" data-id="${s.id}" style="cursor:pointer" tabindex="0" role="button" aria-label="${s.name}"><circle cx="${x}" cy="${y}" r="11" fill="none" stroke="${col}" stroke-width="2" class="halo"/><circle cx="${x}" cy="${y}" r="5" fill="${col}" stroke="#fff" stroke-width="1.5"/><text x="${x+(e?-14:14)}" y="${y+4}" text-anchor="${e?'end':'start'}" class="mlbl">${short(s.name)}</text></g>`});
+const LAB={wahbah:['e',4],khaybar:['e',-6],dunes:['w',4],rahat:['w',4],hisma:['e',4],hith:['e',10],summan:['e',4],jirsan:['w',12],tuwaiq:['w',-2],sirhan:['e',4]};
+SITES.forEach(s=>{let [x,y]=P(s.lon,s.lat);const col=s.world==='Mars'?'var(--rust)':'var(--regolith)';const e=LAB[s.id][0]==='w';y=y;
+ svg+=`<g class="pin" data-id="${s.id}" style="cursor:pointer" tabindex="0" role="button" aria-label="${s.name}"><circle cx="${x}" cy="${y}" r="11" fill="none" stroke="${col}" stroke-width="2" class="halo"/><circle cx="${x}" cy="${y}" r="5" fill="${col}" stroke="#fff" stroke-width="1.5"/><text x="${x+(e?-14:14)}" y="${y+LAB[s.id][1]}" text-anchor="${e?'end':'start'}" class="mlbl">${short(s.name)}</text></g>`});
 svg+=`<g transform="translate(16,428)"><rect width="190" height="30" rx="4" fill="rgba(8,10,31,.72)"/><circle cx="14" cy="15" r="5" fill="var(--regolith)" stroke="#fff"/><text x="24" y="19" class="mlbl small">Moon analog</text><circle cx="104" cy="15" r="5" fill="var(--rust)" stroke="#fff"/><text x="114" y="19" class="mlbl small">Mars analog</text></g>`;
 map.innerHTML=svg;
 
@@ -604,15 +696,21 @@ function tryLeaflet(){if(!window.L)return;const el=document.getElementById('lmap
  const t=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:17,attribution:'Imagery © Esri, Maxar, Earthstar Geographics'}).addTo(lmap);
  lmap.attributionControl.setPrefix('Leaflet');
  let ok=false;t.on('tileload',()=>{if(ok)return;ok=true;el.classList.add('on');document.getElementById('mapmode').textContent='Satellite imagery · click a site to zoom in'});
- SITES.forEach(s=>{const col=s.world==='Mars'?'#f0485e':'#5fb6ff';L.marker([s.lat,s.lon],{icon:L.divIcon({className:'lpin',html:`<i style="background:${col}"></i><span>${short(s.name)}</span>`,iconSize:[0,0]})}).addTo(lmap).on('click',()=>focusSite(s.id))});
+ SITES.forEach(s=>{const col=s.world==='Mars'?'#f0485e':'#5fb6ff';s._m=L.marker([s.lat,s.lon],{icon:L.divIcon({className:'lpin',html:`<i style="background:${col}"></i><span class="${LAB[s.id][0]==='w'?'w':''}">${short(s.name)}</span>`,iconSize:[0,0]})}).addTo(lmap).on('click',()=>focusSite(s.id))});
 }
 function focusSite(id){highlight(id);const s=SITES.find(x=>x.id===id);if(lmap&&document.getElementById('lmap').classList.contains('on'))lmap.flyTo([s.lat,s.lon],s.scale>=20?13:14,{duration:1.6})}
 function go(id){highlight(id);selectSite(id);document.getElementById('tour').scrollIntoView()}
 const fmt=v=>v===null||v==='pending'?'<span class="na">pending</span>':v;
-document.getElementById('cards').innerHTML=SITES.map(s=>`<article class="card" data-id="${s.id}" tabindex="0">
- <div class="t"><b>${s.name}</b><span class="tag">${s.lat.toFixed(2)}°N ${s.lon.toFixed(2)}°E</span></div>
- <div class="kv"><div><small>Size</small><span>${fmt(s.diam)}</span></div><div><small>Depth</small><span>${fmt(s.depth)}</span></div><div><small>Rim slope</small><span>${fmt(s.slope)}</span></div><div><small>Elevation</small><span>${fmt(s.elev)}</span></div></div>
- <p class="analog">${s.type} · Analog: ${s.analog}</p><div><button class="btn small" data-go="${s.id}">Open in 3D</button></div></article>`).join('');
+document.getElementById('cards').innerHTML=SITES.map(s=>`<article class="card" data-id="${s.id}" data-group="${s.group}" tabindex="0">
+ <div class="t"><b>${s.name}</b><span class="sim"><em>${s.sim}%</em> similarity</span></div>
+ <p class="analog"><span class="gtag ${s.group}">${s.group==='known'?'Known analog':'New discovery'}</span> ${s.type} · <span class="mono">${s.lat.toFixed(4)}°N ${s.lon.toFixed(4)}°E</span></p>
+ <p class="cmp"><span class="world ${s.world.toLowerCase()}">${s.world.toUpperCase()}</span> ${s.analog}</p>
+ <div class="kv"><div><small>Temperature</small><span>${s.climate.t}</span></div><div><small>Humidity</small><span>${s.climate.h}</span></div><div><small>Rainfall / yr</small><span>${s.climate.r}</span></div><div><small>Solar / day</small><span>${s.climate.s}</span></div></div>
+ <details><summary>Similarities, differences and tests</summary><p><b>Similar:</b> ${s.simText}</p><p><b>Different:</b> ${s.diff}</p><p><b>Engineering test:</b> ${s.test}</p><p class="muted">NASA source: ${s.nasa} ${s.refs.map(r=>'['+r+']').join('')}</p></details>
+ <div><button class="btn small" data-go="${s.id}">Open in 3D</button></div></article>`).join('');
+document.querySelectorAll('#siteFilter button').forEach(b=>b.onclick=()=>{const f=b.dataset.f;document.querySelectorAll('#siteFilter button').forEach(x=>x.setAttribute('aria-pressed',x===b));
+ document.querySelectorAll('.card').forEach(c=>c.hidden=f!=='all'&&c.dataset.group!==f);document.querySelectorAll('.pin').forEach(p=>{const g=SITES.find(x=>x.id===p.dataset.id).group;p.style.opacity=f==='all'||g===f?1:.2});SITES.forEach(x=>x._m&&x._m.setOpacity(f==='all'||x.group===f?1:.2))});
+document.getElementById('refList').innerHTML=REFS.map(r=>`<li>${r}</li>`).join('');
 function highlight(id){document.querySelectorAll('.card').forEach(c=>c.dataset.active=c.dataset.id===id);document.querySelectorAll('.pin .halo').forEach(h=>h.setAttribute('r',h.parentNode.dataset.id===id?16:11))}
 document.querySelectorAll('.card,.pin').forEach(el=>{el.addEventListener('click',e=>{if(e.target.closest('[data-go]'))return;focusSite(el.dataset.id)});el.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.target.closest('[data-go]'))focusSite(el.dataset.id)})});
 document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.go)));
@@ -671,7 +769,7 @@ const sq=v=>v*v;
 const H={
  wahbah(x,z){const r=Math.hypot(x,z),R=55,D=12.5;let h=fbm(x*.03,z*.03)*1.4;
   if(r<R){h+=-D+D*Math.pow(sstep(R*.5,R,r),1.4)}
-  h+=2.2*Math.exp(-sq((r-R)/6))+(r>R?1.6*Math.exp(-(r-R)/22):0);return h},
+  h+=2.2*Math.exp(-sq((r-R)/6))+1.6*Math.exp(-Math.max(0,r-R)/22)*sstep(R-3,R+3,r);return h},
  jirsan(x,z){let h=ridged(x*.04,z*.04)*2.2+fbm(x*.01,z*.01)*3;
   const p=28*Math.sin(x/26)+8*Math.sin(x/9),d=Math.abs(z-p);h+=0.6*Math.exp(-sq(d/10));
   if(Math.sin(x*.12+1)>.35)h-=1.4*(1-sstep(2.2,4.5,d));
@@ -690,6 +788,67 @@ const ALT_COL={moon:['#a6a6a2','#7d7d78','#4b4b48'],mars:['#c47a4f','#a0583a','#
 const SALT='#ece8de';
 const SKY={earth:{top:'#4f86c6',hor:'#cfe0ea',fog:0xd2dde4,fd:.0022,sun:[1,.96,.88],amb:.5},moon:{top:'#000000',hor:'#000000',fog:0,fd:0,sun:[1,1,1],amb:.04},mars:{top:'#b9845d',hor:'#e3b98f',fog:0xd6a77c,fd:.0035,sun:[1,.9,.78],amb:.42}};
 const DUSTSKY={top:'#a07a58',hor:'#c9a27a'};
+/* ---------------- ROUTES & VR ---------------- */
+const arc=(cx,cz,r,a0,a1,n)=>Array.from({length:n},(_,i)=>{const a=(a0+(a1-a0)*i/(n-1))*Math.PI/180;return[cx+r*Math.cos(a),cz+r*Math.sin(a)]});
+const tubeZ=x=>28*Math.sin(x/26)+8*Math.sin(x/9);
+const ROUTES={
+ wahbah:[{n:'Rim traverse',p:arc(0,0,60,200,340,8)},{n:'Descent to the salt floor',p:[[0,-95],[0,-72],[1,-52],[0,-28],[0,0]]},{n:'Ejecta approach',p:[[-95,40],[-82,32],[-68,20]]}],
+ jirsan:[{n:'Along the lava tube',p:[-80,-50,-20,10,40,75].map(x=>[x,tubeZ(x)+9])},{n:'Across a skylight',p:[[4.7,-15],[4.7,0],[4.7,9],[4.7,20],[4.7,35]]},{n:'Up the cinder cone',p:[[10,-10],[35,-35],[56,-53]]}],
+ hith:[{n:'Plateau loop',p:arc(-4,3,22,0,330,10)},{n:'Approach the pit edge',p:[[-45,-45],[-25,-20],[-12,-6]]},{n:'Down the wadi',p:[[-90,-6],[-40,14],[0,30],[50,50]]}],
+ khaybar:[{n:'Between the cones',p:[[-90,5],[-45,-10],[0,-40],[45,5],[90,12]]},{n:'Up the main cone',p:[[0,-70],[0,-40],[0,-12]]},{n:'Rough lava field',p:[[-85,-85],[-20,-78],[40,-82],[85,-88]]}],
+ dunes:[{n:'Across the dunes',p:[[-90,10],[-30,8],[30,12],[90,10]]},{n:'Along a dune corridor',p:[[-15,-90],[-17,0],[-15,90]]},{n:'To the small crater',p:[[-20,-80],[10,-55],[34,-34]]}]
+};
+function cellCrack(x,z){const xi=Math.floor(x),zi=Math.floor(z);let f1=9,f2=9;for(let i=-1;i<=1;i++)for(let j=-1;j<=1;j++){const cx=xi+i+hash(xi+i,zi+j),cz=zi+j+hash(zi+j+57,xi+i+13);const d=Math.hypot(x-cx,z-cz);if(d<f1){f2=f1;f1=d}else if(d<f2)f2=d}return f2-f1}
+const tuwLine=x=>10*Math.sin(x/30)+4*Math.sin(x/11);
+Object.assign(H,{
+ rahat(x,z){let h=ridged(x*.07,z*.07)*2.6+fbm(x*.01,z*.01)*3+Math.max(0,vnoise(x*.6,z*.6)-.55)*2.4;
+  [[30,20,18,8],[-50,-30,14,6]].forEach(([cx,cz,R,Hc])=>{const r=Math.hypot(x-cx,z-cz);if(r<R){h+=Hc*Math.pow(1-r/R,1.2);if(r<R*.3)h-=Hc*.3*Math.pow(1-r/(R*.3),1.5)}});return h},
+ hisma(x,z){const m=fbm(x*.018+5,z*.018-3,4);let h=fbm(x*.03,z*.03)*1.5;h+=18*sstep(.08,.15,m)+2*ridged(x*.08,z*.08)*sstep(.1,.2,m);h+=1.5*Math.pow(.5+.5*Math.sin(x*.09+z*.03),3)*(1-sstep(.05,.12,m));return h},
+ summan(x,z){const base=fbm(x*.02,z*.02)*5;const t=Math.floor(base*1.4)/1.4;let h=t+(base-t)*.3+fbm(x*.25,z*.25)*.12;
+  for(const [cx,cz,R] of [[0,0,4],[25,-18,2.5],[-28,22,3]]){const r=Math.hypot(x-cx,z-cz);if(r<R)h=-30+r/R*3;else if(r<R+1.2)h-=(1-sstep(R,R+1.2,r))*33}return h},
+ tuwaiq(x,z){const L=tuwLine(x);let h=30*(1-sstep(L-2,L+6,z));h+=Math.floor(h/6)*.4+fbm(x*.04,z*.04)*1.2;if(z>L)h+=4*Math.exp(-(z-L)/8)*(.5+.5*vnoise(x*.2,z*.2));return h},
+ sirhan(x,z){const c=cellCrack(x*.35,z*.35);return fbm(x*.008,z*.008)*1.2-.18*(1-sstep(0,.12,c))+fbm(x*.15,z*.15)*.05}
+});
+Object.assign(EARTH_COL,{rahat:['#3b3532','#4f443b','#2a2522'],hisma:['#d08a5c','#b9643d','#7a3a24'],summan:['#d8c9a8','#c2ab83','#8a7556'],tuwaiq:['#ddbd90','#c49a6a','#8e6845'],sirhan:['#ddd0b4','#c9b796','#8f7b5d']});
+Object.assign(ROUTES,{
+ rahat:[{n:'Across the sharp lava',p:[[-90,-10],[-30,0],[30,-5],[90,0]]},{n:'Up a cinder cone',p:[[30,-20],[30,5],[30,18]]},{n:'Along a lava channel',p:[[-80,60],[-20,50],[40,70]]}],
+ hisma:[{n:'Between the mesas',p:[[-90,0],[-40,5],[0,-5],[40,0],[90,5]]},{n:'Up a sand ramp',p:[[-60,-80],[-40,-40],[-20,0]]},{n:'Canyon corridor',p:[[0,-90],[5,-30],[0,30],[5,90]]}],
+ summan:[{n:'Plateau traverse',p:[[-90,-40],[0,-30],[90,-35]]},{n:'Approach the main opening',p:[[-40,-40],[-15,-15],[-5,-4]]},{n:'Between the openings',p:[[-28,22],[0,0],[25,-18]]}],
+ tuwaiq:[{n:'Along the cliff top',p:[-90,-45,0,45,90].map(x=>[x,tuwLine(x)-14])},{n:'Down the escarpment',p:[[0,-40],[0,-8],[0,8],[0,40]]},{n:'Plain below the cliff',p:[-90,-45,0,45,90].map(x=>[x,tuwLine(x)+25])}],
+ sirhan:[{n:'Across the mud flats',p:[[-90,0],[0,4],[90,0]]},{n:'Landing-zone survey loop',p:arc(0,0,40,0,330,10)},{n:'Diagonal transect',p:[[-80,-80],[0,0],[80,80]]}]
+});
+
+let routeSel=0,routeObjs=[],driveT=0,driveCurve=null,drivePlaying=true,rig=null;
+const fmtLen=m=>m>=1000?(m/1000).toFixed(1)+' km':Math.round(m)+' m';
+const routeCurve=r=>new THREE.CatmullRomCurve3(r.p.map(([x,z])=>new THREE.Vector3(x,0,z)));
+function routeStats(r){const c=routeCurve(r),f=H[cur],N=240;let len=0,max=0,sum=0,prev=null;
+ for(let i=0;i<=N;i++){const p=c.getPointAt(i/N);p.y=f(p.x,p.z);if(prev){const ds=Math.hypot(p.x-prev.x,p.z-prev.z);if(ds>1e-6){const sl=Math.atan(Math.abs(p.y-prev.y)/ds)*180/Math.PI;max=Math.max(max,sl);sum+=sl*ds;len+=ds}}prev=p}
+ return{len,max,mean:sum/(len||1)}}
+const slopeCls=v=>v<15?'ok':v<25?'warn':'bad';
+function buildRoutes(){routeObjs.forEach(o=>{o.parent&&o.parent.remove(o)});routeObjs=[];const f=H[cur];
+ ROUTES[cur].forEach((r,i)=>{const pts=routeCurve(r).getSpacedPoints(220).map(p=>new THREE.Vector3(p.x,f(p.x,p.z)+.18,p.z));const sel=i===routeSel;
+  const geo=new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts),330,sel?.32:.18,6,false);
+  [A,B].forEach(w=>{const m=new THREE.Mesh(geo,new THREE.MeshBasicMaterial({color:sel?0x2ee6c8:0xffffff,transparent:true,opacity:sel?1:.5,fog:false}));w.sc.add(m);routeObjs.push(m)})})}
+function renderRoutes(){const s=SITES.find(x=>x.id===cur),el=document.getElementById('rlist');
+ el.innerHTML=ROUTES[cur].map((r,i)=>{const st=routeStats(r),c=slopeCls(st.max);
+  return `<button class="route" data-i="${i}" aria-pressed="${i===routeSel}"><span class="rl">${String.fromCharCode(65+i)}</span><span class="rn">${r.n}<small class="mono">${fmtLen(st.len*s.scale)} · mean ${st.mean.toFixed(0)}° · max ${st.max.toFixed(0)}°</small></span><span class="chip ${c}">${c==='ok'?'Easy':c==='warn'?'Caution':'Too steep'}</span></button>`}).join('');
+ el.querySelectorAll('.route').forEach(b=>b.onclick=()=>{routeSel=+b.dataset.i;buildRoutes();renderRoutes();if(mode==='drive')startDrive()})}
+function startDrive(){driveCurve=routeCurve(ROUTES[cur][routeSel]);driveT=0;drivePlaying=true;syncUI()}
+let gaugeAt=0;
+function driveStep(dt){if(!driveCurve)startDrive();const s=SITES.find(x=>x.id===cur),f=H[cur],L=driveCurve.getLength();
+ if(drivePlaying){driveT+=dt/20;if(driveT>1)driveT=0}
+ const p=driveCurve.getPointAt(driveT),q=driveCurve.getPointAt(Math.min(1,driveT+.01)),a=driveCurve.getPointAt(Math.min(1,driveT+.04));
+ const hp=f(p.x,p.z),hq=f(q.x,q.z),ds=Math.hypot(q.x-p.x,q.z-p.z)||1e-6,sl=Math.atan(Math.abs(hq-hp)/ds)*180/Math.PI,eye=2/s.scale+.4;
+ let dx=q.x-p.x,dz=q.z-p.z;const dl=Math.hypot(dx,dz)||1;dx/=dl;dz/=dl;
+ [A,B].forEach(w=>{w.rover.visible=!renderer.xr.isPresenting;w.rover.position.set(p.x,hp,p.z);w.rover.rotation.y=Math.atan2(dx,dz);w.rover.rotation.x=-Math.atan2(hq-hp,ds)});
+ if(renderer.xr.isPresenting&&rig){rig.position.set(p.x,hp+.05,p.z);rig.rotation.y=Math.atan2(-dx,-dz)}
+ else{const cx=p.x-dx*11,cz=p.z-dz*11;camera.position.set(cx,Math.max(hp+6,f(cx,cz)+2.5),cz);camera.lookAt(a.x,f(a.x,a.z)+.6,a.z)}
+ const now=performance.now();if(now-gaugeAt<120)return;gaugeAt=now;
+ const g=document.getElementById('gauge');g.className='gauge '+slopeCls(sl);
+ g.innerHTML=`<b>ROUTE ${String.fromCharCode(65+routeSel)} · ${compare?'EARTH | '+altSkin().toUpperCase():skin.toUpperCase()}</b><span>slope <em>${sl.toFixed(0)}°</em> ${hq>=hp?'uphill':'downhill'}</span><span>${fmtLen(driveT*L*s.scale)} of ${fmtLen(L*s.scale)}</span>`}
+function enterXR(){compare=false;if(mode!=='drive')mode='drive';syncUI();paint();rig=new THREE.Group();rig.scale.setScalar(1/SITES.find(x=>x.id===cur).scale);A.sc.add(rig);rig.add(camera);camera.position.set(0,0,0);camera.rotation.set(0,0,0);startDrive()}
+function exitXR(){if(rig){rig.remove(camera);A.sc.remove(rig);rig=null}document.getElementById('vrBtn').textContent='Enter VR';resetCamera()}
+
 
 let renderer,camera,controls,cur='wahbah',skin='earth',mode='orbit',dustOn=false,compare=false,split=.5,sunT=.32;
 let A,B,starGeo,dustGeo;const skyTex={};
@@ -700,7 +859,12 @@ function makeWorld(){const sc=new THREE.Scene();const sun=new THREE.DirectionalL
  const hemi=new THREE.HemisphereLight(0xdfe8ff,0x3a2a1c,.5);sc.add(hemi);
  const stars=new THREE.Points(starGeo,new THREE.PointsMaterial({color:0xffffff,size:1.5,sizeAttenuation:false}));sc.add(stars);
  const dust=new THREE.Points(dustGeo,new THREE.PointsMaterial({color:0xd9b38c,size:.35,transparent:true,opacity:.6}));sc.add(dust);
- return{sc,sun,hemi,stars,dust,mesh:null,skin:'earth'}}
+ const rover=new THREE.Group();const bm=new THREE.MeshStandardMaterial({color:0xe8ebf5,roughness:.6}),wm=new THREE.MeshStandardMaterial({color:0x23252e,roughness:.9}),pm=new THREE.MeshStandardMaterial({color:0x3a4fb8,roughness:.4,metalness:.3});
+ const body=new THREE.Mesh(new THREE.BoxGeometry(1.4,.45,2.2),bm);body.position.y=.55;rover.add(body);const panel=new THREE.Mesh(new THREE.BoxGeometry(1.8,.06,1.4),pm);panel.position.set(0,.85,-.2);rover.add(panel);
+ const mast=new THREE.Mesh(new THREE.BoxGeometry(.12,.8,.12),bm);mast.position.set(.45,1.2,.8);rover.add(mast);const head=new THREE.Mesh(new THREE.BoxGeometry(.4,.22,.25),bm);head.position.set(.45,1.65,.85);rover.add(head);
+ [[-.8,.9],[.8,.9],[-.8,0],[.8,0],[-.8,-.9],[.8,-.9]].forEach(([x,z])=>{const w=new THREE.Mesh(new THREE.CylinderGeometry(.3,.3,.25,14),wm);w.rotation.z=Math.PI/2;w.position.set(x,.3,z);rover.add(w)});
+ rover.rotation.order='YXZ';rover.visible=false;rover.traverse(o=>{if(o.isMesh)o.castShadow=true});sc.add(rover);
+ return{sc,sun,hemi,stars,dust,rover,mesh:null,skin:'earth'}}
 function init(){
  if(!window.THREE){document.getElementById('loading').textContent='3D library could not load. Check your connection.';return}
  renderer=new THREE.WebGLRenderer({canvas,antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));
@@ -711,7 +875,7 @@ function init(){
  A=makeWorld();B=makeWorld();
  controls=new THREE.OrbitControls(camera,canvas);controls.enableDamping=true;controls.maxPolarAngle=Math.PI*.47;controls.minDistance=15;controls.maxDistance=260;
  controls.autoRotate=!matchMedia('(prefers-reduced-motion:reduce)').matches;controls.autoRotateSpeed=.4;controls.addEventListener('start',()=>controls.autoRotate=false);
- new ResizeObserver(resize).observe(viewer);resize();buildTerrain();document.getElementById('loading').hidden=true;loop();
+ new ResizeObserver(resize).observe(viewer);resize();renderer.xr.enabled=true;buildTerrain();document.getElementById('loading').hidden=true;renderer.setAnimationLoop(loop);
 }
 function resize(){if(!renderer)return;const w=viewer.clientWidth,h=viewer.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()}
 const leftSkin=()=>compare?'earth':skin;
@@ -721,7 +885,7 @@ function buildTerrain(){
  const N=240,S=200,g=new THREE.PlaneGeometry(S,S,N,N);g.rotateX(-Math.PI/2);
  const pos=g.attributes.position,f=H[cur];hMin=1e9;hMax=-1e9;
  for(let i=0;i<pos.count;i++){const h=f(pos.getX(i),pos.getZ(i));pos.setY(i,h);if(h<hMin)hMin=h;if(h>hMax)hMax=h}
- g.computeVertexNormals();if(geoBase)geoBase.dispose();geoBase=g;paint();resetCamera();
+ g.computeVertexNormals();if(geoBase)geoBase.dispose();geoBase=g;paint();buildRoutes();renderRoutes();resetCamera();
 }
 function colorAttr(g,sk){const pos=g.attributes.position,nrm=g.attributes.normal,cols=new Float32Array(pos.count*3);
  const pal=sk==='earth'?EARTH_COL[cur]:ALT_COL[sk];const c0=new THREE.Color(pal[0]),c1=new THREE.Color(pal[1]),c2=new THREE.Color(pal[2]),salt=new THREE.Color(SALT),c=new THREE.Color();
@@ -758,18 +922,19 @@ function updateSun(){if(!A)return;setSun(A);setSun(B);
   const a=shadeFrac(leftSkin());document.getElementById('shadeLbl').innerHTML=compare?`In shadow · Earth <b>${a}%</b> · ${altSkin()==='moon'?'Moon':'Mars'} <b>${shadeFrac(altSkin())}%</b>`:`Ground in shadow <b>${a}%</b>`})}
 let yaw=0,pitch=-.05;const pos3=new THREE.Vector3(-70,0,70);
 function resetCamera(){
+ if(mode==='drive'){controls.enabled=false;startDrive();return}
  if(mode==='orbit'){camera.position.set(110,85,110);controls.target.set(0,0,0);controls.enabled=true;controls.update()}
- else{controls.enabled=false;const st={wahbah:[0,-75],jirsan:[-60,20],hith:[0,-22],khaybar:[-40,60],dunes:[-60,0]}[cur];pos3.set(st[0],H[cur](st[0],st[1])+1,st[1]);yaw=Math.atan2(pos3.x,pos3.z);pitch=-.08}}
+ else{controls.enabled=false;const st={wahbah:[0,-75],jirsan:[-60,20],hith:[0,-22],khaybar:[-40,60],dunes:[-60,0],rahat:[-60,40],hisma:[-80,0],summan:[-30,-30],tuwaiq:[0,-40],sirhan:[-60,0]}[cur];pos3.set(st[0],H[cur](st[0],st[1])+1,st[1]);yaw=Math.atan2(pos3.x,pos3.z);pitch=-.08}}
 function updateInfo(){const s=SITES.find(x=>x.id===cur);const alt=altSkin();
- const p=compare?`Left: the site today. Right: the same ground lit and coloured as ${alt==='moon'?'the lunar south pole':'Mars'}. Drag the divider.`:skin==='earth'?s.note:`Viewed as ${skin==='moon'?'the Moon (south-pole lighting)':'Mars'}. Analog: ${s.analog}.`;
- document.getElementById('info').innerHTML=`<h3>${s.name}</h3><div class="row"><span>${s.lat.toFixed(2)}°N ${s.lon.toFixed(2)}°E</span><span>${s.diam!=='n/a'?'size '+s.diam:''}</span><span>${s.depth!=='n/a'?'depth '+s.depth:''}</span></div><p>${p}</p>`;
+ const p=compare?`Left: the site today. Right: the same ground lit and coloured as ${alt==='moon'?'the lunar south pole':'Mars'}. Drag the divider.`:skin==='earth'?s.simText:`Viewed as ${skin==='moon'?'the Moon (south-pole lighting)':'Mars'}. Analog: ${s.analog}.`;
+ document.getElementById('info').innerHTML=`<h3>${s.name}</h3><div class="row"><span>${s.lat.toFixed(2)}°N ${s.lon.toFixed(2)}°E</span><span>${s.climate.t}</span><span>solar ${s.climate.s}</span><span>similarity ${s.sim}%</span></div><p>${p}</p>`;
  const len=s.scale>=20?1000:s.scale>=10?500:100,px=len/s.scale;document.getElementById('scalebar').innerHTML=`${len>=1000?len/1000+' km':len+' m'}<i style="width:${Math.min(140,px*1.1)}px;margin-left:auto"></i><span style="opacity:.7">1 unit ≈ ${s.scale} m</span>`}
 function syncUI(){listEl.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.id===cur));
  document.querySelectorAll('[data-skin]').forEach(x=>x.setAttribute('aria-pressed',x.dataset.skin===skin));
- document.querySelectorAll('[data-mode]').forEach(x=>x.setAttribute('aria-pressed',x.dataset.mode===mode));viewer.classList.toggle('walking',mode==='walk');
+ document.querySelectorAll('[data-mode]').forEach(x=>x.setAttribute('aria-pressed',x.dataset.mode===mode));viewer.classList.toggle('walking',mode==='walk');document.getElementById('gauge').hidden=mode!=='drive';document.getElementById('driveBtn').textContent=mode==='drive'?(drivePlaying?'Pause drive':'Resume drive'):'Drive selected route';
  document.getElementById('dustBtn').setAttribute('aria-pressed',dustOn);document.getElementById('cmpBtn').setAttribute('aria-pressed',compare);document.getElementById('sun').value=Math.round(sunT*1000)}
-function selectSite(id){cur=id;syncUI();if(renderer)buildTerrain()}
-function setTour(o){cur=o.site??cur;skin=o.skin??skin;dustOn=o.dust??dustOn;compare=o.compare??false;if(o.sun!=null)sunT=o.sun;mode='orbit';syncUI();if(renderer)buildTerrain();document.getElementById('tour').scrollIntoView()}
+function selectSite(id){cur=id;routeSel=0;syncUI();if(renderer)buildTerrain()}
+function setTour(o){routeSel=0;cur=o.site??cur;skin=o.skin??skin;dustOn=o.dust??dustOn;compare=o.compare??false;if(o.sun!=null)sunT=o.sun;mode='orbit';syncUI();if(renderer)buildTerrain();document.getElementById('tour').scrollIntoView()}
 document.querySelectorAll('[data-skin]').forEach(b=>b.onclick=()=>{skin=b.dataset.skin;syncUI();if(renderer)paint()});
 document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{mode=b.dataset.mode;syncUI();if(renderer)resetCamera()});
 document.getElementById('dustBtn').onclick=()=>{dustOn=!dustOn;syncUI();if(renderer)paint()};
@@ -791,8 +956,10 @@ canvas.addEventListener('pointerup',()=>drag=null);canvas.addEventListener('poin
 const pad={};document.querySelectorAll('.walkpad button').forEach(b=>{const k=b.dataset.k;b.addEventListener('pointerdown',e=>{pad[k]=1;e.preventDefault()});['pointerup','pointerleave','pointercancel'].forEach(ev=>b.addEventListener(ev,()=>pad[k]=0))});
 
 let last=performance.now();
-function loop(t=performance.now()){requestAnimationFrame(loop);const dt=Math.min(.05,(t-last)/1000);last=t;
+function loop(t=performance.now()){const dt=Math.min(.05,(t-last)/1000);last=t;
+ if(mode!=='drive'){A.rover.visible=false;B.rover.visible=false}
  if(mode==='orbit')controls.update();
+ else if(mode==='drive')driveStep(dt);
  else{const s=SITES.find(x=>x.id===cur);const speed=(14/s.scale)*12*dt;
   if(keys.a||keys.arrowleft||pad.l)yaw+=1.6*dt;if(keys.d||keys.arrowright||pad.r)yaw-=1.6*dt;
   let mv=0;if(keys.w||keys.arrowup||pad.f)mv=1;if(keys.s||keys.arrowdown||pad.b)mv=-1;
@@ -801,9 +968,16 @@ function loop(t=performance.now()){requestAnimationFrame(loop);const dt=Math.min
   camera.position.copy(pos3);camera.lookAt(pos3.clone().add(new THREE.Vector3(-Math.sin(yaw)*Math.cos(pitch),Math.sin(pitch),-Math.cos(yaw)*Math.cos(pitch))))}
  if(A.dust.visible||B.dust.visible){const p=dustGeo.attributes.position;for(let i=0;i<p.count;i++){let x=p.getX(i)+dt*18;if(x>110)x=-110;p.setX(i,x)}p.needsUpdate=true}
  const w=viewer.clientWidth,h=viewer.clientHeight;
- if(compare){const sx=Math.round(w*split);renderer.setScissorTest(true);renderer.setViewport(0,0,w,h);
+ if(compare&&!renderer.xr.isPresenting){const sx=Math.round(w*split);renderer.setScissorTest(true);renderer.setViewport(0,0,w,h);
   renderer.setScissor(0,0,sx,h);renderer.render(A.sc,camera);renderer.setScissor(sx,0,w-sx,h);renderer.render(B.sc,camera);renderer.setScissorTest(false)}
  else renderer.render(A.sc,camera)}
+
+document.getElementById('driveBtn').onclick=()=>{if(mode==='drive'){drivePlaying=!drivePlaying;syncUI();return}mode='drive';syncUI();if(renderer)resetCamera();viewer.scrollIntoView({block:'center'})};
+const vrBtn=document.getElementById('vrBtn');
+try{if(navigator.xr&&navigator.xr.isSessionSupported)navigator.xr.isSessionSupported('immersive-vr').then(ok=>{if(ok)vrBtn.hidden=false}).catch(()=>{})}catch(e){}
+vrBtn.onclick=async()=>{if(!renderer)return;if(renderer.xr.isPresenting){renderer.xr.getSession().end();return}
+ try{const ses=await navigator.xr.requestSession('immersive-vr',{optionalFeatures:['local-floor']});enterXR();await renderer.xr.setSession(ses);vrBtn.textContent='Exit VR';ses.addEventListener('end',exitXR)}
+ catch(e){document.getElementById('vrNote').textContent='VR could not start on this device: '+e.message}};
 
 /* ---------------- MISSION REPLAY ---------------- */
 const REPLAY=[
@@ -814,7 +988,7 @@ const REPLAY=[
    ['10 Jun 2018',22,'Too little power to stay awake. The rover sends its last signal.'],
    ['13 Feb 2019',0,'After more than 1,000 recovery commands, NASA ends the mission.']],
   fix:'Dust-tolerant power: panel coatings, cleaning and battery margin under heavy, long-lasting dust.',
-  test:{site:'dunes',skin:'mars',dust:true,sun:.5},where:'Rub\' al Khali dunes',when:'Mar – May (shamal dust season), with Jun – Aug heat',
+  test:{site:'hisma',skin:'mars',dust:true,sun:.5},where:'Hisma Plateau red terrain',when:'Mar – May (shamal dust season)',
   src:'NASA/JPL Opportunity mission updates, 2018–2019'},
  {name:'InSight',world:'Mars',metric:'Daily energy (Wh per sol)',max:5500,
   steps:[['Nov 2018',5000,'Lands on Elysium Planitia. Solar panels are clean.'],
@@ -841,7 +1015,7 @@ const REPLAY=[
    ['2017',null,'New traction-control software reduces the load on the wheels.'],
    ['Today',null,'Still driving. Wear is managed by route planning.']],
   fix:'Wheel wear and route-planning tests on sharp basalt and rock fields.',
-  test:{site:'khaybar',skin:'mars',dust:false,sun:.35},where:'Harrat Khaybar basalt field',when:'Year-round; Nov – Feb avoids peak heat',
+  test:{site:'rahat',skin:'mars',dust:false,sun:.35},where:'Harrat Rahat sharp basalt',when:'Year-round; Nov – Feb avoids peak heat',
   src:'NASA/JPL Curiosity mission updates, 2013–2017'}
 ];
 let rpM=0,rpS=0,rpTimer=null;
