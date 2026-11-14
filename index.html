@@ -328,6 +328,9 @@ footer{border-top:1px solid var(--line);padding-block:28px 40px;font-size:.8rem;
 .fres a{color:var(--sand)}
 @media (max-width:860px){.finder{grid-template-columns:1fr}.fin{border-right:0;border-bottom:1px solid var(--line)}.fout{max-height:none}}
 .info h3{color:#eceefe}
+.maplayers{display:flex;flex-wrap:wrap;margin-bottom:8px;background:var(--panel);border-color:var(--line);backdrop-filter:none}
+.maplayers button{color:var(--fg)}
+.maplayers button[aria-pressed="true"]{background:var(--sand);color:var(--onaccent)}
 </style>
 </head>
 <body>
@@ -460,7 +463,7 @@ footer{border-top:1px solid var(--line);padding-block:28px 40px;font-size:.8rem;
     <div class="seg" id="siteFilter" role="group" aria-label="Filter sites"><button data-f="all" aria-pressed="true">All</button><button data-f="evidence" aria-pressed="false">Evidence on land</button><button data-f="marine" aria-pressed="false">Ocean-world analogs</button><button data-f="candidate" aria-pressed="false">Candidates</button></div>
   </div>
   <div class="mapgrid">
-    <div class="mapbox"><div class="mapframe"><svg id="map" viewBox="0 0 520 470" role="img" aria-label="Relief map of Saudi Arabia with candidate sites"></svg><div id="lmap" class="lmap"></div></div><p class="mono muted" id="mapmode" style="font-size:.7rem;margin-top:8px">Illustrated relief map · satellite imagery loads on the public site</p><p class="mono muted" style="font-size:.7rem;margin-top:4px">Pin colour = analog type · darker = stronger evidence (grade A → C) · dashed = candidate</p></div>
+    <div class="mapbox"><div class="seg maplayers" id="mapLayers" role="group" aria-label="Map layer" hidden><button data-ly="esri" aria-pressed="true">High-res imagery</button><button data-ly="viirs" aria-pressed="false">NASA true colour</button><button data-ly="lst" aria-pressed="false">NASA surface temp.</button><button data-ly="relief" aria-pressed="false">NASA relief</button></div><div class="mapframe"><svg id="map" viewBox="0 0 520 470" role="img" aria-label="Relief map of Saudi Arabia with candidate sites"></svg><div id="lmap" class="lmap"></div></div><p class="mono muted" id="mapmode" style="font-size:.7rem;margin-top:8px">Illustrated relief map · satellite imagery loads on the public site</p><p class="mono muted" style="font-size:.7rem;margin-top:4px">Pin colour = analog type · darker = stronger evidence (grade A → C) · dashed = candidate</p></div>
     <div class="cards" id="cards"></div>
   </div>
 </section>
@@ -522,7 +525,7 @@ footer{border-top:1px solid var(--line);padding-block:28px 40px;font-size:.8rem;
     <div class="step"><span class="k">STEP 5</span><h3>Recommend</h3><p>Pair sites and seasons with a system and the failures it must survive.</p></div>
   </div>
   <div class="data">
-    <span><b>NASADEM</b> elevation</span><span><b>SRTM</b> 30 m DEM</span><span><b>MODIS</b> land surface temp.</span><span><b>MERRA-2</b> dust aerosol</span><span><b>NASA POWER</b> solar &amp; climate</span><span><b>LRO Diviner</b> lunar temp.</span><span><b>Moon Trek</b></span><span><b>Mars Trek</b></span><span><b>HiRISE</b> imagery</span>
+    <span><b>NASADEM</b> elevation</span><span><b>SRTM</b> 30 m DEM</span><span><b>MODIS</b> land surface temp.</span><span><b>MERRA-2</b> dust aerosol</span><span><b>NASA POWER</b> solar &amp; climate</span><span><b>LRO Diviner</b> lunar temp.</span><span><b>Moon Trek</b></span><span><b>Mars Trek</b></span><span><b>HiRISE</b> imagery</span><span><b>NASA GIBS</b> VIIRS, MODIS LST, ASTER GDEM</span>
   </div>
 </section>
 
@@ -557,7 +560,7 @@ footer{border-top:1px solid var(--line);padding-block:28px 40px;font-size:.8rem;
 </section>
 
 <section id="refs">
-  <div class="sechead"><p class="eyebrow">References</p><h2>Sources</h2><p>Studies cited on this page, with links to the original publisher. NASA data for the next comparison step: Moon Trek, Mars Trek, Earthdata Search, NASA POWER, NASADEM / SRTM, LRO Diviner and HiRISE.</p></div>
+  <div class="sechead"><p class="eyebrow">References</p><h2>Sources</h2><p>Studies cited on this page, with links to the original publisher. NASA data on this page: GIBS imagery layers (VIIRS true colour, MODIS land surface temperature, ASTER GDEM relief) and SRTM elevation for the 3D terrain. NASA data for the next comparison step: Moon Trek, Mars Trek, Earthdata Search, NASA POWER, NASADEM / SRTM, LRO Diviner and HiRISE.</p></div>
   <ol class="refs" id="refList"></ol>
 </section>
 
@@ -795,7 +798,15 @@ function tryLeaflet(){if(!window.L)return;const el=document.getElementById('lmap
  lmap=L.map(el,{scrollWheelZoom:false,zoomSnap:.5}).fitBounds([[16.3,32.4],[32.2,55.7]]);
  const t=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:17,attribution:'Imagery © Esri, Maxar, Earthstar Geographics'}).addTo(lmap);
  lmap.attributionControl.setPrefix('Leaflet');
- let ok=false;t.on('tileload',()=>{if(ok)return;ok=true;el.classList.add('on');document.getElementById('mapmode').textContent='Satellite imagery · click a site to zoom in'});
+ const GB='https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/',vi=L.tileLayer(GB+'VIIRS_SNPP_CorrectedReflectance_TrueColor/default/2026-10-01/GoogleMapsCompatible_Level9/{z}/{y}/{x}.jpg',{maxNativeZoom:9,maxZoom:17,attribution:'NASA GIBS · VIIRS SNPP'});
+ const LAY={esri:{l:[t],n:'High-resolution imagery (Esri, Maxar, Earthstar Geographics) · click a site to zoom in'},
+  viirs:{l:[vi],n:'NASA GIBS · VIIRS SNPP true colour, 1 Oct 2026 · about 250 m per pixel'},
+  lst:{l:[vi,L.tileLayer(GB+'MODIS_Terra_Land_Surface_Temp_Day/default/2026-07-15/GoogleMapsCompatible_Level7/{z}/{y}/{x}.png',{maxNativeZoom:7,maxZoom:17,opacity:.82,attribution:'NASA GIBS · MODIS Terra LST'})],n:'NASA GIBS · MODIS Terra daytime land surface temperature, 15 Jul 2026 · about 1 km per pixel · colour scale as in NASA Worldview'},
+  relief:{l:[L.tileLayer(GB+'ASTER_GDEM_Greyscale_Shaded_Relief/default/2000-01-01/GoogleMapsCompatible_Level12/{z}/{y}/{x}.jpg',{maxNativeZoom:12,maxZoom:17,attribution:'NASA GIBS · ASTER GDEM'})],n:'NASA GIBS · ASTER GDEM shaded relief · about 30 m elevation data'}};
+ const setLayer=k=>{const on=new Set(LAY[k].l);Object.values(LAY).forEach(v=>v.l.forEach(x=>{if(!on.has(x)&&lmap.hasLayer(x))lmap.removeLayer(x)}));LAY[k].l.forEach(x=>{if(!lmap.hasLayer(x))x.addTo(lmap)});
+  document.getElementById('mapmode').textContent=LAY[k].n;document.querySelectorAll('#mapLayers button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.ly===k))};
+ document.querySelectorAll('#mapLayers button').forEach(b=>b.onclick=()=>setLayer(b.dataset.ly));
+ let ok=false;t.on('tileload',()=>{if(ok)return;ok=true;el.classList.add('on');document.getElementById('mapLayers').hidden=false;document.getElementById('mapmode').textContent=LAY.esri.n});
  SITES.filter(s=>s.lat!=null).forEach(s=>{const col=CATH[s.cat],cand=s.group==='candidate';s._m=L.marker([s.lat,s.lon],{icon:L.divIcon({className:'lpin',html:`<i style="${cand?`background:rgba(8,10,31,.6);border:2px dashed ${col}`:`background:${gfill(col,s.grade)}`}"></i><span class="${LAB[s.id][2]||LAB[s.id][0]}">${short(s.name)}</span>`,iconSize:[0,0]})}).addTo(lmap).on('click',()=>focusSite(s.id))});
 }
 function focusSite(id){highlight(id);const s=SITES.find(x=>x.id===id);if(s.lat!=null&&lmap&&document.getElementById('lmap').classList.contains('on'))lmap.flyTo([s.lat,s.lon],!s.scale?11:s.scale>=20?13:14,{duration:1.6})}

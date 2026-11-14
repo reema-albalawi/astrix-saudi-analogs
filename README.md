@@ -9,6 +9,7 @@ ASTRIX maps Saudi sites that serve as analogs for the Moon, Mars and ocean world
 
 ## Features (prototype)
 - Find a test site: choose the mission destination, terrain and test, and get ranked Saudi sites with their evidence
+- NASA GIBS map layers: VIIRS SNPP true colour, MODIS Terra daytime land surface temperature and ASTER GDEM shaded relief (no API key needed)
 - Real 3D terrain for each site from SRTM elevation (AWS Terrain Tiles) with Esri satellite imagery draped on top
 - Guided headset preview: stand on the rim of Al Wahbah, then see the same view lit like the lunar south pole; phone motion to look around; WebXR "Enter VR" on supported headsets
 - 3D terrain for 10 land sites, viewable as Earth, Moon or Mars, with orbit, walk and rover-drive modes, rover routes and slope ratings
@@ -50,7 +51,7 @@ Prototype. Readiness scores are sample values. 3D terrain uses real SRTM elevati
 Open `index.html` in a browser, or visit the live site.
 
 ## References
-See the References section of the live site for full citations and links (S01–S24). NASA data for the next comparison step: Moon Trek, Mars Trek, Earthdata Search, NASA POWER, NASADEM / SRTM, LRO Diviner, HiRISE.
+See the References section of the live site for full citations and links (S01–S24). NASA data used on the site: GIBS (VIIRS, MODIS LST, ASTER GDEM) and SRTM elevation. NASA data for the next comparison step: Moon Trek, Mars Trek, Earthdata Search, NASA POWER, NASADEM / SRTM, LRO Diviner, HiRISE.
 
 Satellite imagery: Esri, Maxar, Earthstar Geographics. 3D: three.js. Map: Leaflet.
 
