@@ -2,7 +2,7 @@
 
 **NASA Space Apps Challenge 2026 (Tabuk)** · Challenge: *Identify Earth Locations that Analog the Permanent Moon Base Locations and Mars*
 
-**Live site:** https://reema-albalawi.github.io/astrix-saudi-analogs/
+**Live site:** https://saudi-analogs.work (also https://reema-albalawi.github.io/astrix-saudi-analogs/, which redirects)
 
 ## Summary
 ASTRIX maps Saudi sites that serve as analogs for the Moon and Mars, using only published evidence. Each site shows its evidence grade, the values researchers measured, the instruments they used and what was not proven. Sites are linked to engineering problems past missions faced, such as dust on solar panels, wheels stuck in soft soil and sharp rocks, and a planner suggests where to test space systems before launch.
