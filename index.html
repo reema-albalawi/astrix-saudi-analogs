@@ -284,6 +284,7 @@ footer{border-top:1px solid var(--line);padding-block:28px 40px;font-size:.8rem;
 #siteFilter{margin-top:6px;align-self:flex-start}
 .refs{margin:0;padding-left:22px;display:grid;gap:6px;font-size:.88rem;color:var(--fg2);max-width:80ch}
 .lpin span.w{left:auto;right:10px}
+.lpin span.up{top:-24px;left:-4px}
 @media (min-width:861px){.mapbox{position:sticky;top:72px}}
 .grade{font-family:var(--mono);font-size:.64rem;letter-spacing:.04em;padding:2px 7px;border-radius:3px;border:1px solid;white-space:nowrap}
 .grade.gA{color:var(--ok)}.grade.gB{color:var(--regolith)}.grade.gC{color:var(--warn)}.grade.gx{color:var(--muted);border-style:dashed}
@@ -423,7 +424,7 @@ footer{border-top:1px solid var(--line);padding-block:28px 40px;font-size:.8rem;
     <div class="seg" id="siteFilter" role="group" aria-label="Filter sites"><button data-f="all" aria-pressed="true">All</button><button data-f="evidence" aria-pressed="false">Evidence on land</button><button data-f="marine" aria-pressed="false">Ocean-world analogs</button><button data-f="candidate" aria-pressed="false">Candidates</button></div>
   </div>
   <div class="mapgrid">
-    <div class="mapbox"><div class="mapframe"><svg id="map" viewBox="0 0 520 470" role="img" aria-label="Relief map of Saudi Arabia with candidate sites"></svg><div id="lmap" class="lmap"></div></div><p class="mono muted" id="mapmode" style="font-size:.7rem;margin-top:8px">Illustrated relief map · satellite imagery loads on the public site</p></div>
+    <div class="mapbox"><div class="mapframe"><svg id="map" viewBox="0 0 520 470" role="img" aria-label="Relief map of Saudi Arabia with candidate sites"></svg><div id="lmap" class="lmap"></div></div><p class="mono muted" id="mapmode" style="font-size:.7rem;margin-top:8px">Illustrated relief map · satellite imagery loads on the public site</p><p class="mono muted" style="font-size:.7rem;margin-top:4px">Pin colour = analog type · darker = stronger evidence (grade A → C) · dashed = candidate</p></div>
     <div class="cards" id="cards"></div>
   </div>
 </section>
@@ -719,7 +720,8 @@ const HARRATS=[[39.9,23.0,.45,1.3],[40.1,25.6,.6,.7],[41.3,22.9,.35,.45],[37.6,2
 const P=(lon,lat)=>[(lon-34)*21.38+18,(32.8-lat)*23.4+14];
 const pts=a=>a.map(p=>P(...p).map(v=>v.toFixed(1)).join(',')).join(' ');
 const CITIES=[['Riyadh',46.72,24.69],['Jeddah',39.17,21.54],['Madinah',39.6,24.47],['Dammam',50.1,26.43]];
-const short=n=>n.replace(/ (Crater|Cave|Plateau|Basin|Dahls)$/,'');
+const SHORTN={'Hatiba Mons Vents':'Hatiba Vents','Atlantis II & Discovery Deeps':'Atlantis II','NEOM Deep Brine Pools':'NEOM Brine Pools',"Wabar Craters, Rub' al Khali":'Wabar Craters'};
+const short=n=>SHORTN[n]||n.replace(/ (Crater|Cave|Plateau|Basin|Dahls)$/,'');
 const map=document.getElementById('map');
 let svg=`<defs>
 <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1d4f73"/><stop offset="1" stop-color="#123a5a"/></linearGradient>
@@ -742,20 +744,23 @@ let svg=`<defs>
 <polygon points="${pts(BORDER)}" fill="none" stroke="#fff" stroke-opacity=".85" stroke-width="1.2" stroke-dasharray="5 3"/>
 <g font-family="IBM Plex Mono,monospace" font-size="9" fill="#cfe3f3" letter-spacing=".12em" opacity=".8"><text x="${P(36.6,22)[0]}" y="${P(36.6,22)[1]}" transform="rotate(-52 ${P(36.6,22).join(' ')})">RED SEA</text><text x="${P(51.6,27.3)[0]}" y="${P(51.6,27.3)[1]}" transform="rotate(-30 ${P(51.6,27.3).join(' ')})">ARABIAN GULF</text></g>
 <g font-family="IBM Plex Mono,monospace" font-size="8" fill="#5a3f26" letter-spacing=".1em" opacity=".75"><text x="${P(48.5,20.2)[0]}" y="${P(48.5,20.2)[1]}">RUB' AL KHALI</text><text x="${P(39.6,28.4)[0]}" y="${P(39.6,28.4)[1]}">AN NAFUD</text><text x="${P(41.6,24.4)[0]}" y="${P(41.6,24.4)[1]}" fill="#2b2420">HARRATS</text></g>`;
-const LAB={wahbah:['e',4],khaybar:['e',-6],dunes:['w',4],rahat:['w',4],hisma:['e',12],hith:['e',10],summan:['e',4],jirsan:['w',12],tuwaiq:['w',-2],sirhan:['e',4],neom:['e',-10,'w'],hatiba:['w',4],atlantis:['w',8]};
+const LAB={wahbah:['e',4],khaybar:['e',-6],dunes:['w',4],rahat:['w',4],hisma:['e',12],hith:['e',10],summan:['e',4],jirsan:['w',12],tuwaiq:['w',-2],sirhan:['e',4],neom:['e',-10,'up'],hatiba:['w',4],atlantis:['w',8]};
+const GP={A:100,B:55,C:25};const gfill=(c,g)=>`color-mix(in srgb, ${c} ${GP[g]||0}%, #ffffff)`;
 const CATC={moon:'var(--regolith)',mars:'var(--rust)',ocean:'#2ee6c8'},CATH={moon:'#5fb6ff',mars:'#f0485e',ocean:'#2ee6c8'};
 SITES.filter(s=>s.lat!=null).forEach(s=>{let [x,y]=P(s.lon,s.lat);const col=CATC[s.cat];const e=LAB[s.id][0]==='w';const cand=s.group==='candidate';
- svg+=`<g class="pin" data-id="${s.id}" style="cursor:pointer" tabindex="0" role="button" aria-label="${s.name}"><circle cx="${x}" cy="${y}" r="11" fill="none" stroke="${col}" stroke-width="2" class="halo" stroke-dasharray="${cand?'3 3':'none'}"/><circle cx="${x}" cy="${y}" r="5" fill="${cand?'rgba(8,10,31,.6)':col}" stroke="${cand?col:'#fff'}" stroke-width="1.5"/><text x="${x+(e?-14:14)}" y="${y+LAB[s.id][1]}" text-anchor="${e?'end':'start'}" class="mlbl">${short(s.name)}</text></g>`});
-svg+=`<g transform="translate(12,412)"><rect width="300" height="46" rx="4" fill="rgba(8,10,31,.78)"/><circle cx="14" cy="15" r="5" fill="var(--regolith)" stroke="#fff"/><text x="24" y="19" class="mlbl small">Moon</text><circle cx="72" cy="15" r="5" fill="var(--rust)" stroke="#fff"/><text x="82" y="19" class="mlbl small">Mars</text><circle cx="128" cy="15" r="5" fill="#2ee6c8" stroke="#fff"/><text x="138" y="19" class="mlbl small">Ocean worlds</text><circle cx="14" cy="34" r="5" fill="rgba(8,10,31,.6)" stroke="#fff" stroke-dasharray="2 2"/><text x="24" y="38" class="mlbl small">Candidate, needs verification</text></g>`;
+ svg+=`<g class="pin" data-id="${s.id}" style="cursor:pointer" tabindex="0" role="button" aria-label="${s.name}"><circle cx="${x}" cy="${y}" r="11" fill="none" stroke="${col}" stroke-width="2" class="halo" stroke-dasharray="${cand?'3 3':'none'}"/><circle cx="${x}" cy="${y}" r="${cand?5:6}" style="fill:${cand?'rgba(8,10,31,.6)':gfill(col,s.grade)}" stroke="${cand?col:'#fff'}" stroke-width="1.5"/><text x="${x+(e?-14:14)}" y="${y+LAB[s.id][1]}" text-anchor="${e?'end':'start'}" class="mlbl">${short(s.name)}</text></g>`});
+svg+=`<g transform="translate(12,394)"><rect width="320" height="66" rx="4" fill="rgba(8,10,31,.8)"/><circle cx="14" cy="15" r="5" fill="var(--regolith)" stroke="#fff"/><text x="24" y="19" class="mlbl small">Moon</text><circle cx="72" cy="15" r="5" fill="var(--rust)" stroke="#fff"/><text x="82" y="19" class="mlbl small">Mars</text><circle cx="128" cy="15" r="5" fill="#2ee6c8" stroke="#fff"/><text x="138" y="19" class="mlbl small">Ocean worlds</text>
+<text x="8" y="38" class="mlbl small">Darker = stronger evidence:</text><circle cx="160" cy="34" r="5" style="fill:${gfill('#a48bff','A')}" stroke="#fff"/><text x="169" y="38" class="mlbl small">A</text><circle cx="192" cy="34" r="5" style="fill:${gfill('#a48bff','B')}" stroke="#fff"/><text x="201" y="38" class="mlbl small">B</text><circle cx="224" cy="34" r="5" style="fill:${gfill('#a48bff','C')}" stroke="#fff"/><text x="233" y="38" class="mlbl small">C</text>
+<circle cx="14" cy="54" r="5" fill="rgba(8,10,31,.6)" stroke="#fff" stroke-dasharray="2 2"/><text x="24" y="58" class="mlbl small">Candidate, no published evidence yet</text></g>`;
 map.innerHTML=svg;
 
 let lmap=null;
 function tryLeaflet(){if(!window.L)return;const el=document.getElementById('lmap');
- lmap=L.map(el,{scrollWheelZoom:false,zoomSnap:.5}).fitBounds([[16.3,34.5],[32.2,55.7]]);
+ lmap=L.map(el,{scrollWheelZoom:false,zoomSnap:.5}).fitBounds([[16.3,32.4],[32.2,55.7]]);
  const t=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:17,attribution:'Imagery © Esri, Maxar, Earthstar Geographics'}).addTo(lmap);
  lmap.attributionControl.setPrefix('Leaflet');
  let ok=false;t.on('tileload',()=>{if(ok)return;ok=true;el.classList.add('on');document.getElementById('mapmode').textContent='Satellite imagery · click a site to zoom in'});
- SITES.filter(s=>s.lat!=null).forEach(s=>{const col=CATH[s.cat];s._m=L.marker([s.lat,s.lon],{icon:L.divIcon({className:'lpin',html:`<i style="background:${col}"></i><span class="${(LAB[s.id][2]||LAB[s.id][0])==='w'?'w':''}">${short(s.name)}</span>`,iconSize:[0,0]})}).addTo(lmap).on('click',()=>focusSite(s.id))});
+ SITES.filter(s=>s.lat!=null).forEach(s=>{const col=CATH[s.cat],cand=s.group==='candidate';s._m=L.marker([s.lat,s.lon],{icon:L.divIcon({className:'lpin',html:`<i style="${cand?`background:rgba(8,10,31,.6);border:2px dashed ${col}`:`background:${gfill(col,s.grade)}`}"></i><span class="${LAB[s.id][2]||LAB[s.id][0]}">${short(s.name)}</span>`,iconSize:[0,0]})}).addTo(lmap).on('click',()=>focusSite(s.id))});
 }
 function focusSite(id){highlight(id);const s=SITES.find(x=>x.id===id);if(s.lat!=null&&lmap&&document.getElementById('lmap').classList.contains('on'))lmap.flyTo([s.lat,s.lon],!s.scale?11:s.scale>=20?13:14,{duration:1.6})}
 function go(id){highlight(id);selectSite(id);document.getElementById('tour').scrollIntoView()}
