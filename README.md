@@ -5,7 +5,7 @@
 **Live site:** https://reema-albalawi.github.io/astrix-saudi-analogs/
 
 ## Summary
-ASTRIX maps Saudi sites that serve as analogs for the Moon, Mars and ocean worlds, using only published evidence. Each site shows its evidence grade, the values researchers measured, the instruments they used and what was not proven. Sites are linked to engineering problems past missions faced, such as dust on solar panels, wheels stuck in soft soil and sharp rocks, and a planner suggests where to test space systems before launch.
+ASTRIX maps Saudi sites that serve as analogs for the Moon and Mars, using only published evidence. Each site shows its evidence grade, the values researchers measured, the instruments they used and what was not proven. Sites are linked to engineering problems past missions faced, such as dust on solar panels, wheels stuck in soft soil and sharp rocks, and a planner suggests where to test space systems before launch.
 
 ## Features (prototype)
 - Find a test site: choose the mission destination, terrain and test, and get ranked Saudi sites with their evidence
@@ -19,7 +19,7 @@ ASTRIX maps Saudi sites that serve as analogs for the Moon, Mars and ocean world
 - Weighted engineering readiness score (sample values) and a test scenario planner
 
 ## Evidence approach
-- Every value comes from a cited study (S01–S24 below).
+- Every value comes from a cited study (see the References page of the live site).
 - No similarity percentages are calculated.
 - Lab temperatures, deep-water temperatures and air temperatures are labelled separately.
 - Volcanic-field coordinates are field centres, not sample points. Sites without a published point get no map pin.
@@ -34,9 +34,6 @@ ASTRIX maps Saudi sites that serve as analogs for the Moon, Mars and ocean world
 | Umm Jirsan Cave | B | 25.5888, 39.757 | Lunar/Martian lava tubes [S08] |
 | Harrat Khaybar | B | 25.5, 40.0 (field centre) | Basaltic volcanic terrain [S10] |
 | Northern Harrat Rahat | B | 23.08, 39.78 (field centre) | Basalt lava fields [S12] |
-| NEOM Deep Brine Pools | B | 28.788598, 34.795156 | Water-world brines [S15] |
-| Hatiba Mons Vents | B | 22.2675, 37.851 | Icy-moon ocean analogs [S16] |
-| Atlantis II & Discovery Deeps | B | 21.345533, 38.083983 | Limits of life in hot brines [S18] |
 | Saudi Sabkhas and Deserts | C | nine sites, no single point | Salinity and dryness for Mars [S20] |
 
 **Candidates (need verification):** Hisma Plateau, Dahl Hith, As-Summan Dahls, Edge of the World (Tuwaiq), Wadi As-Sirhan Basin.
@@ -51,7 +48,7 @@ Prototype. Readiness scores are sample values. 3D terrain uses real SRTM elevati
 Open `index.html` in a browser, or visit the live site.
 
 ## References
-See the References section of the live site for full citations and links (S01–S24). NASA data used on the site: GIBS (VIIRS, MODIS LST, ASTER GDEM) and SRTM elevation. NASA data for the next comparison step: Moon Trek, Mars Trek, Earthdata Search, NASA POWER, NASADEM / SRTM, LRO Diviner, HiRISE.
+See the References section of the live site for full citations and links . NASA data used on the site: GIBS (VIIRS, MODIS LST, ASTER GDEM) and SRTM elevation. NASA data for the next comparison step: Moon Trek, Mars Trek, Earthdata Search, NASA POWER, NASADEM / SRTM, LRO Diviner, HiRISE.
 
 Satellite imagery: Esri, Maxar, Earthstar Geographics. 3D: three.js. Map: Leaflet.
 

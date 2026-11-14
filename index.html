@@ -359,14 +359,14 @@ section{scroll-margin-top:110px}
   <div>
     <p class="eyebrow">Saudi Analogs · NASA Space Apps 2026</p>
     <h1 style="margin-top:14px">Explore Earth's <em>planetary</em> <span class="m">analogues</span> in Saudi Arabia.</h1>
-    <p class="lede">Craters, lava tubes, volcanic fields, dunes, sinkholes and deep-sea brine pools that resemble the Moon, Mars and ocean worlds, each backed by published evidence and matched to the problems past missions actually hit.</p>
+    <p class="lede">Craters, lava tubes, volcanic fields, dunes, sinkholes and salt flats that resemble the Moon and Mars, each backed by published evidence and matched to the problems past missions actually hit.</p>
     <div class="cta"><a class="btn primary" href="#finder">Find a test site</a><a class="btn" href="#tour">Walk a site in 3D</a><button class="btn" id="heroHp">Headset preview</button><a class="btn" href="#engine">Plan a test</a></div>
   </div>
   <aside class="challenge">
     <span class="tag">CHALLENGE</span>
     <p>Identify Earth locations that analog the permanent Moon base locations and Mars.</p>
     <div class="mono muted" style="font-size:.78rem;display:grid;gap:4px">
-      <span>24 cited studies · 10 evidence sites · 5 candidates</span>
+      <span>20 cited studies · 7 evidence sites · 5 candidates</span>
       <span>NASA data: GIBS (VIIRS, MODIS LST, ASTER GDEM) · SRTM</span>
     </div>
   </aside>
@@ -472,10 +472,10 @@ section{scroll-margin-top:110px}
     <p class="eyebrow">Candidate analog sites</p>
     <h2>Saudi analog sites, backed by published evidence.</h2>
     <p>Every value below comes from a cited study. We do not calculate similarity percentages; each site shows its evidence grade, what was measured, and what was not proven. Candidates are sites our team proposed that still need published evidence.</p>
-    <div class="seg" id="siteFilter" role="group" aria-label="Filter sites"><button data-f="all" aria-pressed="true">All</button><button data-f="evidence" aria-pressed="false">Evidence on land</button><button data-f="marine" aria-pressed="false">Ocean-world analogs</button><button data-f="candidate" aria-pressed="false">Candidates</button></div>
+    <div class="seg" id="siteFilter" role="group" aria-label="Filter sites"><button data-f="all" aria-pressed="true">All</button><button data-f="evidence" aria-pressed="false">Published evidence</button><button data-f="candidate" aria-pressed="false">Candidates</button></div>
   </div>
   <div class="mapgrid">
-    <div class="mapbox"><div class="seg maplayers" id="mapLayers" role="group" aria-label="Map layer" hidden><button data-ly="esri" aria-pressed="true">High-res imagery</button><button data-ly="viirs" aria-pressed="false">NASA true colour</button><button data-ly="lst" aria-pressed="false">NASA surface temp.</button><button data-ly="relief" aria-pressed="false">NASA relief</button></div><div class="mapframe"><svg id="map" viewBox="0 0 520 470" role="img" aria-label="Relief map of Saudi Arabia with candidate sites"></svg><div id="lmap" class="lmap"></div></div><p class="mono muted" id="mapmode" style="font-size:.7rem;margin-top:8px">Illustrated relief map · satellite imagery loads on the public site</p><p class="mono muted" style="font-size:.7rem;margin-top:4px">Pin colour = analog type · darker = stronger evidence (grade A → C) · dashed = candidate</p></div>
+    <div class="mapbox"><div class="seg maplayers" id="mapLayers" role="group" aria-label="Map layer" hidden><button data-ly="esri" aria-pressed="true">High-res imagery</button><button data-ly="viirs" aria-pressed="false">NASA true colour</button><button data-ly="lst" aria-pressed="false">NASA surface temp.</button><button data-ly="relief" aria-pressed="false">NASA relief</button></div><div class="mapframe"><svg id="map" viewBox="0 0 520 470" role="img" aria-label="Relief map of Saudi Arabia with candidate sites"></svg><div id="lmap" class="lmap"></div></div><p class="mono muted" id="mapmode" style="font-size:.7rem;margin-top:8px">Illustrated relief map · satellite imagery loads on the public site</p><p class="mono muted" style="font-size:.7rem;margin-top:4px">Pin colour: blue Moon, red Mars · darker = stronger evidence (grade A → C) · dashed = candidate</p></div>
     <div class="cards" id="cards"></div>
   </div>
 </section>
@@ -488,7 +488,7 @@ section{scroll-margin-top:110px}
     <a class="st" href="#tour"><span class="ci" style="--c:var(--rust)">→</span><b>3D tour</b><p>Real terrain seen as Earth, Moon or Mars, with rover routes and VR.</p></a>
     <a class="st" href="#missions"><span class="ci" style="--c:var(--sand)">→</span><b>Mission replays</b><p>How dust, sand and rocks ended missions, and where to test the fix.</p></a>
     <a class="st" href="#plan"><span class="ci" style="--c:var(--regolith)">→</span><b>Test planning</b><p>Combine stresses into a test scenario and weigh site readiness.</p></a>
-    <a class="st" href="#about"><span class="ci" style="--c:var(--rust)">→</span><b>About &amp; sources</b><p>Method, limits, judging criteria, 24 references and the team.</p></a>
+    <a class="st" href="#about"><span class="ci" style="--c:var(--rust)">→</span><b>About &amp; sources</b><p>Method, limits, judging criteria, 20 references and the team.</p></a>
   </div>
 </section>
 
@@ -577,7 +577,7 @@ section{scroll-margin-top:110px}
   <div class="crit">
     <a class="cr" href="#replay"><span class="ci" style="--c:var(--regolith)">01</span><b>Impact</b><p>Points engineers to a real Saudi site and season for tests that could have helped Opportunity, InSight and Spirit.</p><span class="go">See Mission replay</span></a>
     <a class="cr" href="#tour"><span class="ci" style="--c:var(--sand)">02</span><b>Creativity</b><p>The same ground seen as Earth, Moon and Mars, side by side, with a movable Sun and a rover-route VR preview. Failures are linked to places, not only to terrain.</p><span class="go">Try Compare</span></a>
-    <a class="cr" href="#scale"><span class="ci" style="--c:var(--rust)">03</span><b>Validity</b><p>24 cited studies with evidence grades, published measurements only, no invented similarity scores, and stated limits for every site.</p><span class="go">See To scale</span></a>
+    <a class="cr" href="#scale"><span class="ci" style="--c:var(--rust)">03</span><b>Validity</b><p>20 cited studies with evidence grades, published measurements only, no invented similarity scores, and stated limits for every site.</p><span class="go">See To scale</span></a>
     <a class="cr" href="#sites"><span class="ci" style="--c:var(--regolith)">04</span><b>Relevance</b><p>Answers the challenge directly: Saudi analogs for lunar south-pole base sites and for Mars, with low-angle polar lighting.</p><span class="go">See the sites</span></a>
     <a class="cr" href="#home"><span class="ci" style="--c:var(--sand)">05</span><b>Presentation</b><p>One public link that runs in any browser and walks from problem to recommended test in under five minutes.</p><span class="go">Back to home</span></a>
   </div>
@@ -632,7 +632,7 @@ addEventListener('hashchange',route);
  set(m);b.onclick=()=>set(m==='light'?'dark':'light')})();
 /* ---------------- DATA ---------------- */
 const SITES=[
- {id:'wahbah',group:'evidence',grade:'A',name:'Al Wahbah Crater',type:'Volcanic maar crater, Harrat Kishb',lat:22.90632,lon:41.13849,prec:'Published crater point [S01]',cat:'ocean',world:'Moon',terrain:true,scale:20,
+ {id:'wahbah',group:'evidence',grade:'A',name:'Al Wahbah Crater',type:'Volcanic maar crater, Harrat Kishb',lat:22.90632,lon:41.13849,prec:'Published crater point [S01]',cat:'moon',world:'Moon',terrain:true,scale:20,
   analog:'Salty, alkaline ocean under the ice of Saturn\'s moon Enceladus (chemical and biological similarity, not surface) [S01]',
   measured:['pH 8.9–9.4; conductivity 28.6–66.2 dS/m across three soil types [S01]','48 bacterial strains isolated and 2 genomes sequenced [S01]; 65 representative isolates [S03]','Incubation at 35–55 °C in the lab, not field weather [S01, S03]'],
   dates:'Samples Feb 2023 [S01] and Apr 2021 [S03]; earlier study 2018 [S02]',tools:'Agilent 5110 ICP-OES, Flash 2000 CHNS/O, pH/EC, 16S and genome sequencing, UHPLC–Orbitrap ID-X MS with GNPS [S01, S03]; ICP-MS, HACH DR-3900, Ultrameter II, Roche 454 [S02]',
@@ -672,21 +672,6 @@ const SITES=[
   measured:['Five samples per region at 5–20 cm depth [S20]','pH, moisture, conductivity and microbial diversity [S20]'],
   dates:'Published 2020 [S20]',tools:'SEM JEOL 7500FA, HI98107 pH meter, EC meter, PCR and sequencing [S20]',
   limits:'Not a direct Mars match, and the paper gives no point for each site. Sites: Awshaziyah, Al-Qasab, Al-Kasr, Tabuk, Al-Kharj, Madinah, Jubail, Taif, Buqayq.',use:'Biosignature and planetary-protection studies.',refs:['S20','S19']},
- {id:'neom',group:'marine',grade:'B',name:'NEOM Deep Brine Pools',type:'Deep-sea brine pools, Gulf of Aqaba',lat:28.788598,lon:34.795156,prec:'Published CTD station [S15]',cat:'ocean',world:'Ocean',terrain:false,
-  analog:'Low-oxygen brine pools relevant to water worlds; no proven match with Enceladus [S15]',
-  measured:['Water 21.33 °C; salinity 40 → 160 PSU inside the pool [S15]','Oxygen ≈180 → under 10 µmol/L across the interface [S15]','Interface at 1,769.46 m depth [S15]'],
-  dates:'OceanX expedition 2020; published 2022 [S15]',tools:'ROV Argus Mariner XL, Kongsberg EM712/EM304 sonar, Sea-Bird 911+ CTD, Niskin bottles, refractometer, Picarro isotope spectrometer, ICP-MS/MS [S15]',
-  limits:'Marine exploration with no space instruments tested. Deep-water temperature is not Enceladus temperature.',use:'Instrument tests for future ocean-world probes.',refs:['S15','S19']},
- {id:'hatiba',group:'marine',grade:'B',name:'Hatiba Mons Vents',type:'Hydrothermal vents, Red Sea',lat:22.2675,lon:37.851,prec:'Published Kabir Field sample point [S17]',cat:'ocean',world:'Ocean',terrain:false,
-  analog:'Hydrothermal activity and iron-rich deposits, candidate analogs for icy-moon oceans [S16, S19]',
-  measured:['Fluids and sediments up to 40 °C or more; a minimum, as loggers could not enter the vents [S16]','Kabir Field at ≈960 m depth [S17]'],
-  dates:'MAPR late 2021; surveys Feb 2022; ROV May 2022 and Feb 2023 [S16]; fungal samples May 2022 [S17]',tools:'AUV Hugin Superior, ROV, Kongsberg EM2040 multibeam, EdgeTech sub-bottom profiler, CTD, NOAA MAPR, HOBO logger, QGIS [S16, S17]',
-  limits:'The space link is a research possibility in a review [S19], not a test of life beyond Earth.',use:'Biosignature detection methods for icy moons.',refs:['S16','S17','S19']},
- {id:'atlantis',group:'marine',grade:'B',name:'Atlantis II & Discovery Deeps',type:'Hot brine pools, central Red Sea',lat:21.345533,lon:38.083983,prec:'Atlantis II sample point [S18]; Discovery at 21.28475, 38.0484',cat:'ocean',world:'Ocean',terrain:false,
-  analog:'Hot, metal-rich, high-pressure brines for studying the limits of life on water worlds [S18, S19]',
-  measured:['Brine 68 °C at Atlantis II and 45 °C at Discovery [S18]','Sample depths ≈2,168 m and ≈2,180 m [S18]'],
-  dates:'Published 2012 [S18]; space-relevance review 2026 [S19]',tools:'Gravity corer; geochemical and microbial analysis [S18]',
-  limits:'In the central Red Sea between Saudi Arabia and Sudan; not claimed as Saudi territory.',use:'Extreme-environment limits for life-detection instruments.',refs:['S18','S19']},
  {id:'hisma',group:'candidate',name:'Hisma Plateau',type:'Red sandstone mesas',lat:28.75,lon:35.8,prec:'Team guide coordinates',cat:'mars',world:'Mars',terrain:true,scale:15,
   analog:'Proposed: Valles Marineris and the slopes of Gale crater',use:'Visual navigation on red terrain; effect of dust storms on power.',view:'Red sandstone mesas. Candidate site, not yet backed by a published study.'},
  {id:'hith',group:'candidate',name:'Dahl Hith',type:'Karst collapse sinkhole',lat:24.4847,lon:46.9994,prec:'Team guide coordinates',cat:'mars',world:'Mars',terrain:true,scale:2,
@@ -713,10 +698,6 @@ const REFS=[
  ['S12','Sisson, Calvert & Mooney, eds. (2023). Active volcanism on the Arabian Shield: Northern Harrat Rahat. USGS Professional Paper 1862.','https://doi.org/10.3133/pp1862'],
  ['S13','Smithsonian Institution GVP (accessed 2026). Harrat Rahat volcano profile. Global Volcanism Program.','https://volcano.si.edu/volcano.cfm?vn=231070'],
  ['S14','Almutlaq, Nahas & Mulligan (2022). Calculation of the Rub\' al Khali Sand Dune Volume for Estimating Potential Sand Sources. Remote Sensing.','https://doi.org/10.3390/rs14051216'],
- ['S15','Purkis et al. (2022). Discovery of the deep-sea NEOM Brine Pools in the Gulf of Aqaba, Red Sea. Communications Earth & Environment.','https://doi.org/10.1038/s43247-022-00482-x'],
- ['S16','van der Zwan et al. (2023). Widespread diffuse venting and large microbial iron-mounds in the Red Sea. Communications Earth & Environment.','https://doi.org/10.1038/s43247-023-01169-7'],
- ['S17','Schultz et al. (2025). Diving into the deep: fungal diversity in the newly discovered hydrothermal vents of Hatiba Mons, Red Sea. Frontiers in Marine Science.','https://doi.org/10.3389/fmars.2025.1649339'],
- ['S18','Bougouffa et al. (2012). Unique Prokaryotic Consortia in Geochemically Distinct Sediments from Red Sea Atlantis II and Discovery Deep Brine Pools. PLOS ONE.','https://doi.org/10.1371/journal.pone.0042872'],
  ['S19','Schultz et al. (2026). Extreme Arabian environments and their microbiomes: new frontiers for astrobiology and biosignature discovery. Extremophiles.','https://doi.org/10.1007/s00792-026-01426-5'],
  ['S20','Alotaibi et al. (2020). Microbial Diversity of Some Sabkha and Desert Sites in Saudi Arabia. PubMed Central.','https://pmc.ncbi.nlm.nih.gov/articles/PMC7499299/'],
  ['S21','Smithsonian Institution GVP (accessed 2026). Harrat Kishb volcano profile (Al Wahbah). Global Volcanism Program.','https://volcano.si.edu/volcano.cfm?vn=231071'],
@@ -825,7 +806,7 @@ const GP={A:100,B:55,C:25};const gfill=(c,g)=>`color-mix(in srgb, ${c} ${GP[g]||
 const CATC={moon:'var(--regolith)',mars:'var(--rust)',ocean:'#2ee6c8'},CATH={moon:'#5fb6ff',mars:'#f0485e',ocean:'#2ee6c8'};
 SITES.filter(s=>s.lat!=null).forEach(s=>{let [x,y]=P(s.lon,s.lat);const col=CATC[s.cat];const e=LAB[s.id][0]==='w';const cand=s.group==='candidate';
  svg+=`<g class="pin" data-id="${s.id}" style="cursor:pointer" tabindex="0" role="button" aria-label="${s.name}"><circle cx="${x}" cy="${y}" r="11" fill="none" stroke="${col}" stroke-width="2" class="halo" stroke-dasharray="${cand?'3 3':'none'}"/><circle cx="${x}" cy="${y}" r="${cand?5:6}" style="fill:${cand?'rgba(8,10,31,.6)':gfill(col,s.grade)}" stroke="${cand?col:'#fff'}" stroke-width="1.5"/><text x="${x+(e?-14:14)}" y="${y+LAB[s.id][1]}" text-anchor="${e?'end':'start'}" class="mlbl">${short(s.name)}</text></g>`});
-svg+=`<g transform="translate(12,394)"><rect width="320" height="66" rx="4" fill="rgba(8,10,31,.8)"/><circle cx="14" cy="15" r="5" fill="var(--regolith)" stroke="#fff"/><text x="24" y="19" class="mlbl small">Moon</text><circle cx="72" cy="15" r="5" fill="var(--rust)" stroke="#fff"/><text x="82" y="19" class="mlbl small">Mars</text><circle cx="128" cy="15" r="5" fill="#2ee6c8" stroke="#fff"/><text x="138" y="19" class="mlbl small">Ocean worlds</text>
+svg+=`<g transform="translate(12,394)"><rect width="320" height="66" rx="4" fill="rgba(8,10,31,.8)"/><circle cx="14" cy="15" r="5" fill="var(--regolith)" stroke="#fff"/><text x="24" y="19" class="mlbl small">Moon</text><circle cx="72" cy="15" r="5" fill="var(--rust)" stroke="#fff"/><text x="82" y="19" class="mlbl small">Mars</text>
 <text x="8" y="38" class="mlbl small">Darker = stronger evidence:</text><circle cx="160" cy="34" r="5" style="fill:${gfill('#a48bff','A')}" stroke="#fff"/><text x="169" y="38" class="mlbl small">A</text><circle cx="192" cy="34" r="5" style="fill:${gfill('#a48bff','B')}" stroke="#fff"/><text x="201" y="38" class="mlbl small">B</text><circle cx="224" cy="34" r="5" style="fill:${gfill('#a48bff','C')}" stroke="#fff"/><text x="233" y="38" class="mlbl small">C</text>
 <circle cx="14" cy="54" r="5" fill="rgba(8,10,31,.6)" stroke="#fff" stroke-dasharray="2 2"/><text x="24" y="58" class="mlbl small">Candidate, no published evidence yet</text></g>`;
 map.innerHTML=svg;
