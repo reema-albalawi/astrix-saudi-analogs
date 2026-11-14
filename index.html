@@ -39,13 +39,13 @@ p{margin:0}
 
 /* nav */
 nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--night) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);margin:0 calc(-1*max(16px,env(safe-area-inset-left,0px))) ;padding:0 max(16px,env(safe-area-inset-left,0px))}
-nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;height:56px}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:8px 16px;min-height:56px;flex-wrap:wrap}
 .logo{font-family:var(--display);font-weight:700;letter-spacing:.2em;font-size:.95rem;display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--fg)}
 .logo i{width:18px;height:18px;border-radius:50%;background:radial-gradient(circle at 35% 35%,var(--regolith),#5b5f68 60%,#2a2c31);box-shadow:8px 0 0 -4px var(--rust)}
 .navlinks{display:flex;gap:18px;font-size:.85rem}
 .navlinks a{color:var(--muted);text-decoration:none}
 .navlinks a:hover{color:var(--fg)}
-@media (max-width:760px){.navlinks{display:none}}
+@media (max-width:900px){.navlinks{order:3;width:100%;overflow-x:auto;padding-bottom:8px;gap:16px;white-space:nowrap;scrollbar-width:none}}
 
 /* hero */
 .hero{padding-block:72px 40px;display:grid;grid-template-columns:1.3fr 1fr;gap:48px;align-items:end}
@@ -331,24 +331,35 @@ footer{border-top:1px solid var(--line);padding-block:28px 40px;font-size:.8rem;
 .maplayers{display:flex;flex-wrap:wrap;margin-bottom:8px;background:var(--panel);border-color:var(--line);backdrop-filter:none}
 .maplayers button{color:var(--fg)}
 .maplayers button[aria-pressed="true"]{background:var(--sand);color:var(--onaccent)}
+.navlinks a{padding-block:4px;border-bottom:2px solid transparent}
+.navlinks a[aria-current="page"]{color:var(--fg);border-bottom-color:var(--sand)}
+.start{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.st{display:flex;flex-direction:column;gap:8px;padding:20px;background:var(--basalt);border:1px solid var(--line);border-radius:6px;color:var(--fg);text-decoration:none;min-width:0}
+.st:hover{border-color:var(--sand)}
+.st b{font-family:var(--display);font-weight:500;font-size:1.05rem}
+.st p{font-size:.86rem;color:var(--fg2)}
+.st .ci{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-size:1rem;background:color-mix(in srgb,var(--c) 22%,transparent);color:var(--c);border:1px solid var(--c)}
+section{scroll-margin-top:110px}
+@media (max-width:860px){.start{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.start{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 
 <nav><div class="wrap">
-  <a class="logo" href="#top"><i aria-hidden="true"></i>ASTRIX</a>
+  <a class="logo" href="#home"><i aria-hidden="true"></i>ASTRIX</a>
   <div class="navlinks">
-    <a href="#finder">Find a site</a><a href="#tour">3D tour</a><a href="#replay">Mission replay</a><a href="#sites">Sites</a><a href="#scale">To scale</a><a href="#engine">Test planner</a><a href="#criteria">Criteria</a>
+    <a href="#home" data-v="home">Home</a><a href="#find" data-v="find">Find a site</a><a href="#sites" data-v="sites">Sites &amp; map</a><a href="#tour" data-v="tour">3D tour</a><a href="#missions" data-v="missions">Missions</a><a href="#plan" data-v="plan">Test planning</a><a href="#about" data-v="about">About</a>
   </div>
   <div class="navend"><button class="themebtn" id="themeBtn" type="button" aria-label="Switch to light theme">Light</button><span class="proto">PROTOTYPE</span></div>
 </div></nav>
 
 <main class="wrap" id="top">
-<header class="hero">
+<header class="hero" id="hero">
   <div>
     <p class="eyebrow">Saudi Analogs · NASA Space Apps 2026</p>
-    <h1 style="margin-top:14px">Rehearse the <em>Moon</em> and <span class="m">Mars</span> in the Saudi desert.</h1>
-    <p class="lede">We find Saudi craters, sinkholes, lava tubes and dune fields that resemble lunar and Martian terrain, then match them to the problems past missions actually hit: dust on solar panels, wheels stuck in soft soil, freezing nights.</p>
+    <h1 style="margin-top:14px">Explore Earth's <em>planetary</em> <span class="m">analogues</span> in Saudi Arabia.</h1>
+    <p class="lede">Craters, lava tubes, volcanic fields, dunes, sinkholes and deep-sea brine pools that resemble the Moon, Mars and ocean worlds, each backed by published evidence and matched to the problems past missions actually hit.</p>
     <div class="cta"><a class="btn primary" href="#finder">Find a test site</a><a class="btn" href="#tour">Walk a site in 3D</a><button class="btn" id="heroHp">Headset preview</button><a class="btn" href="#engine">Plan a test</a></div>
   </div>
   <aside class="challenge">
@@ -356,10 +367,22 @@ footer{border-top:1px solid var(--line);padding-block:28px 40px;font-size:.8rem;
     <p>Identify Earth locations that analog the permanent Moon base locations and Mars.</p>
     <div class="mono muted" style="font-size:.78rem;display:grid;gap:4px">
       <span>24 cited studies · 10 evidence sites · 5 candidates</span>
-      <span>Data: NASADEM · MODIS · MERRA-2 · LRO · HiRISE</span>
+      <span>NASA data: GIBS (VIIRS, MODIS LST, ASTER GDEM) · SRTM</span>
     </div>
   </aside>
 </header>
+
+<section id="start">
+  <div class="sechead"><p class="eyebrow">Start here</p><h2>What would you like to do?</h2></div>
+  <div class="start">
+    <a class="st" href="#find"><span class="ci" style="--c:var(--sand)">→</span><b>Find a test site</b><p>Choose the destination, terrain and test. Get ranked Saudi sites.</p></a>
+    <a class="st" href="#sites"><span class="ci" style="--c:var(--regolith)">→</span><b>Sites &amp; map</b><p>Evidence for every site on satellite and NASA map layers.</p></a>
+    <a class="st" href="#tour"><span class="ci" style="--c:var(--rust)">→</span><b>3D tour</b><p>Real terrain seen as Earth, Moon or Mars, with rover routes and VR.</p></a>
+    <a class="st" href="#missions"><span class="ci" style="--c:var(--sand)">→</span><b>Mission replays</b><p>How dust, sand and rocks ended missions, and where to test the fix.</p></a>
+    <a class="st" href="#plan"><span class="ci" style="--c:var(--regolith)">→</span><b>Test planning</b><p>Combine stresses into a test scenario and weigh site readiness.</p></a>
+    <a class="st" href="#about"><span class="ci" style="--c:var(--rust)">→</span><b>About &amp; sources</b><p>Method, limits, judging criteria, 24 references and the team.</p></a>
+  </div>
+</section>
 
 <section id="finder">
   <div class="sechead">
@@ -555,7 +578,7 @@ footer{border-top:1px solid var(--line);padding-block:28px 40px;font-size:.8rem;
     <a class="cr" href="#tour"><span class="ci" style="--c:var(--sand)">02</span><b>Creativity</b><p>The same ground seen as Earth, Moon and Mars, side by side, with a movable Sun and a rover-route VR preview. Failures are linked to places, not only to terrain.</p><span class="go">Try Compare</span></a>
     <a class="cr" href="#scale"><span class="ci" style="--c:var(--rust)">03</span><b>Validity</b><p>24 cited studies with evidence grades, published measurements only, no invented similarity scores, and stated limits for every site.</p><span class="go">See To scale</span></a>
     <a class="cr" href="#sites"><span class="ci" style="--c:var(--regolith)">04</span><b>Relevance</b><p>Answers the challenge directly: Saudi analogs for lunar south-pole base sites and for Mars, with low-angle polar lighting.</p><span class="go">See the sites</span></a>
-    <a class="cr" href="#top"><span class="ci" style="--c:var(--sand)">05</span><b>Presentation</b><p>One public link that runs in any browser and walks from problem to recommended test in under five minutes.</p><span class="go">Back to top</span></a>
+    <a class="cr" href="#home"><span class="ci" style="--c:var(--sand)">05</span><b>Presentation</b><p>One public link that runs in any browser and walks from problem to recommended test in under five minutes.</p><span class="go">Back to home</span></a>
   </div>
 </section>
 
@@ -589,6 +612,18 @@ footer{border-top:1px solid var(--line);padding-block:28px 40px;font-size:.8rem;
 <script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/controls/OrbitControls.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script>
+/* ---------------- PAGES ---------------- */
+const VIEWS={home:['hero','start'],find:['finder'],sites:['sites','scale'],tour:['tour'],missions:['problem','replay'],plan:['engine','readiness'],about:['method','limits','criteria','refs','team']};
+let curView=null,pendingCb=null,mapShown=false;
+function viewOf(id){for(const [v,ids] of Object.entries(VIEWS))if(ids.includes(id))return v;const el=id&&document.getElementById(id);if(!el)return null;const sec=el.closest('section,header');return sec&&sec.id!==id?viewOf(sec.id):null}
+function showView(v){curView=v;Object.entries(VIEWS).forEach(([k,ids])=>ids.forEach(id=>{const e=document.getElementById(id);if(e)e.hidden=k!==v}));
+ document.querySelectorAll('.navlinks a').forEach(a=>a.setAttribute('aria-current',a.dataset.v===v?'page':'false'));
+ if(v==='sites'&&typeof lmap!=='undefined'&&lmap)setTimeout(()=>{lmap.invalidateSize();if(!mapShown){mapShown=true;lmap.fitBounds([[16.3,32.4],[32.2,55.7]])}},60)}
+function route(){const h=decodeURIComponent(location.hash.slice(1))||'home',v=VIEWS[h]?h:(viewOf(h)||'home');showView(v);
+ if(pendingCb){const cb=pendingCb;pendingCb=null;requestAnimationFrame(()=>requestAnimationFrame(cb));return}
+ if(VIEWS[h])window.scrollTo(0,0);else{const e=document.getElementById(h);if(e)e.scrollIntoView()}}
+function goView(v,cb){if(curView===v){cb&&cb();return}pendingCb=cb||null;if(location.hash==='#'+v)route();else location.hash=v}
+addEventListener('hashchange',route);
 /* ---------------- THEME ---------------- */
 (function(){const b=document.getElementById('themeBtn');let m='dark';try{m=localStorage.getItem('astrix-mode')||'dark'}catch(e){}
  const set=v=>{m=v;document.documentElement.dataset.ui=v;b.textContent=v==='light'?'Dark':'Light';b.setAttribute('aria-label','Switch to '+(v==='light'?'dark':'light')+' theme');try{localStorage.setItem('astrix-mode',v)}catch(e){}};
@@ -810,7 +845,7 @@ function tryLeaflet(){if(!window.L)return;const el=document.getElementById('lmap
  SITES.filter(s=>s.lat!=null).forEach(s=>{const col=CATH[s.cat],cand=s.group==='candidate';s._m=L.marker([s.lat,s.lon],{icon:L.divIcon({className:'lpin',html:`<i style="${cand?`background:rgba(8,10,31,.6);border:2px dashed ${col}`:`background:${gfill(col,s.grade)}`}"></i><span class="${LAB[s.id][2]||LAB[s.id][0]}">${short(s.name)}</span>`,iconSize:[0,0]})}).addTo(lmap).on('click',()=>focusSite(s.id))});
 }
 function focusSite(id){highlight(id);const s=SITES.find(x=>x.id===id);if(s.lat!=null&&lmap&&document.getElementById('lmap').classList.contains('on'))lmap.flyTo([s.lat,s.lon],!s.scale?11:s.scale>=20?13:14,{duration:1.6})}
-function go(id){highlight(id);selectSite(id);document.getElementById('tour').scrollIntoView()}
+function go(id){highlight(id);selectSite(id);goView('tour',()=>document.getElementById('tour').scrollIntoView())}
 const GR={A:'Grade A · direct analog study',B:'Grade B · field or geological study',C:'Grade C · supporting measurements'};
 const CATN={moon:'MOON',mars:'MARS',ocean:'OCEAN WORLDS'};
 const linkS=t=>t.replace(/S(\d\d)/g,'<a href="#ref-S$1">S$1</a>');
@@ -873,8 +908,8 @@ function renderFinder(){
   <p class="muted">Use: ${s.use}${s.lat!=null?` · <span class="mono">${s.lat.toFixed(4)}°N ${s.lon.toFixed(4)}°E</span>`:''}</p>
   <div class="fbtns">${s.terrain?`<button class="btn small primary" data-f3d="${s.id}">Open in 3D</button>`:''}${s.lat!=null?`<button class="btn small" data-fmap="${s.id}">Show on map</button>`:''}<button class="btn small" data-fev="${s.id}">See evidence</button></div></article>`}).join('');
  out.querySelectorAll('[data-f3d]').forEach(b=>b.onclick=()=>go(b.dataset.f3d));
- out.querySelectorAll('[data-fmap]').forEach(b=>b.onclick=()=>{document.querySelector('#siteFilter [data-f=all]').click();document.querySelector('.mapbox').scrollIntoView({block:'start'});setTimeout(()=>focusSite(b.dataset.fmap),300)});
- out.querySelectorAll('[data-fev]').forEach(b=>b.onclick=()=>{document.querySelector('#siteFilter [data-f=all]').click();const c=document.querySelector(`.card[data-id="${b.dataset.fev}"]`);c.querySelector('details').open=true;highlight(b.dataset.fev);c.scrollIntoView({block:'center'})});
+ out.querySelectorAll('[data-fmap]').forEach(b=>b.onclick=()=>goView('sites',()=>{document.querySelector('#siteFilter [data-f=all]').click();document.querySelector('.mapbox').scrollIntoView({block:'start'});setTimeout(()=>focusSite(b.dataset.fmap),400)}));
+ out.querySelectorAll('[data-fev]').forEach(b=>b.onclick=()=>goView('sites',()=>{document.querySelector('#siteFilter [data-f=all]').click();const c=document.querySelector(`.card[data-id="${b.dataset.fev}"]`);c.querySelector('details').open=true;highlight(b.dataset.fev);c.scrollIntoView({block:'center'})}));
 }
 document.getElementById('fCand').addEventListener('change',e=>{fsel.cand=e.target.checked;renderFinder()});
 document.getElementById('fReset').onclick=()=>{fsel.w='any';fsel.t.clear();fsel.x.clear();finderPills();renderFinder()};
@@ -1099,7 +1134,7 @@ function syncUI(){listEl.querySelectorAll('button').forEach(b=>b.setAttribute('a
  document.querySelectorAll('[data-mode]').forEach(x=>x.setAttribute('aria-pressed',x.dataset.mode===mode));viewer.classList.toggle('walking',mode==='walk');document.getElementById('gauge').hidden=mode!=='drive';document.getElementById('driveBtn').textContent=mode==='drive'?(drivePlaying?'Pause drive':'Resume drive'):'Drive selected route';
  document.getElementById('dustBtn').setAttribute('aria-pressed',dustOn);document.getElementById('cmpBtn').setAttribute('aria-pressed',compare);document.getElementById('sun').value=Math.round(sunT*1000)}
 function selectSite(id){lookOverride=null;cur=id;routeSel=0;syncUI();if(renderer)buildTerrain()}
-function setTour(o){routeSel=0;cur=o.site??cur;skin=o.skin??skin;dustOn=o.dust??dustOn;compare=o.compare??false;if(o.sun!=null)sunT=o.sun;mode='orbit';syncUI();if(renderer)buildTerrain();document.getElementById('tour').scrollIntoView()}
+function setTour(o){routeSel=0;cur=o.site??cur;skin=o.skin??skin;dustOn=o.dust??dustOn;compare=o.compare??false;if(o.sun!=null)sunT=o.sun;mode='orbit';syncUI();if(renderer)buildTerrain();goView('tour',()=>document.getElementById('tour').scrollIntoView())}
 document.querySelectorAll('[data-skin]').forEach(b=>b.onclick=()=>{skin=b.dataset.skin;syncUI();if(renderer)paint()});
 document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{lookOverride=null;mode=b.dataset.mode;syncUI();if(renderer)resetCamera()});
 document.getElementById('dustBtn').onclick=()=>{dustOn=!dustOn;syncUI();if(renderer)paint()};
@@ -1121,7 +1156,7 @@ canvas.addEventListener('pointerup',()=>drag=null);canvas.addEventListener('poin
 const pad={};document.querySelectorAll('.walkpad button').forEach(b=>{const k=b.dataset.k;b.addEventListener('pointerdown',e=>{pad[k]=1;e.preventDefault()});['pointerup','pointerleave','pointercancel'].forEach(ev=>b.addEventListener(ev,()=>pad[k]=0))});
 
 let last=performance.now();
-function loop(t=performance.now()){const dt=Math.min(.05,(t-last)/1000);last=t;
+function loop(t=performance.now()){const dt=Math.min(.05,(t-last)/1000);last=t;if(!renderer.xr.isPresenting&&!viewer.offsetParent)return;
  if(mode!=='drive'){A.rover.visible=false;B.rover.visible=false}
  if(mode==='orbit')controls.update();
  else if(mode==='drive')driveStep(dt);
@@ -1199,7 +1234,7 @@ function renderHP(){const p=document.getElementById('hp'),st=HP[hpStep];
  document.getElementById('hpSteps').innerHTML=HP.map((h,i)=>`<span class="${i===hpStep?'on':''}">${i+1}. ${h.t}</span>`).join('');
  document.getElementById('hpText').textContent=hpStep<2?st.d:(xrOK.v?'Press Enter VR to stand on the rim at real scale and look around with your head.':'Open this same link in a VR headset browser, such as Meta Quest, and press Enter VR. Full headset support with base-building tools is our next step.');
  document.getElementById('hpBack').disabled=hpStep===0;document.getElementById('hpNext').hidden=hpStep===2;document.getElementById('hpVR').hidden=!(hpStep===2&&xrOK.v)}
-function openHP(){hpStep=0;viewer.classList.add('hpon');document.getElementById('hp').hidden=false;document.getElementById('info').hidden=true;setLook('earth');renderHP();document.getElementById('viewer').scrollIntoView({block:'center'})}
+function openHP(){hpStep=0;viewer.classList.add('hpon');document.getElementById('hp').hidden=false;document.getElementById('info').hidden=true;setLook('earth');renderHP();goView('tour',()=>document.getElementById('viewer').scrollIntoView({block:'center'}))}
 function closeHP(){routeObjs.forEach(o=>o.visible=true);viewer.classList.remove('hpon');document.getElementById('hp').hidden=true;document.getElementById('info').hidden=false;lookOverride=null;motionOn=false;document.getElementById('hpMotion').textContent='Use phone motion'}
 document.getElementById('hpBtn').onclick=openHP;document.getElementById('heroHp').onclick=openHP;
 document.getElementById('hpClose').onclick=closeHP;
@@ -1311,6 +1346,7 @@ function renderScale(){const W=640,Hh=260,svg=document.getElementById('scaleSvg'
 document.querySelectorAll('[data-sc]').forEach(b=>b.onclick=()=>{scaleMode=b.dataset.sc;renderScale()});
 renderScale();
 
+route();
 if(document.readyState==='complete')init();else addEventListener('load',init);
 </script>
 </body>
