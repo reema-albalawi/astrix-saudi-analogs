@@ -8,6 +8,8 @@
 ASTRIX maps Saudi sites that serve as analogs for the Moon, Mars and ocean worlds, using only published evidence. Each site shows its evidence grade, the values researchers measured, the instruments they used and what was not proven. Sites are linked to engineering problems past missions faced, such as dust on solar panels, wheels stuck in soft soil and sharp rocks, and a planner suggests where to test space systems before launch.
 
 ## Features (prototype)
+- Find a test site: choose the mission destination, terrain and test, and get ranked Saudi sites with their evidence
+- Real 3D terrain for each site from SRTM elevation (AWS Terrain Tiles) with Esri satellite imagery draped on top
 - Guided headset preview: stand on the rim of Al Wahbah, then see the same view lit like the lunar south pole; phone motion to look around; WebXR "Enter VR" on supported headsets
 - 3D terrain for 10 land sites, viewable as Earth, Moon or Mars, with orbit, walk and rover-drive modes, rover routes and slope ratings
 - Compare split view and a Sun slider with shadow coverage
@@ -42,7 +44,7 @@ ASTRIX maps Saudi sites that serve as analogs for the Moon, Mars and ocean world
 `Score = Σ(criterion_i × weight_i) / Σ(weight_i)`, over criteria with available data. Each criterion is scaled 0–100.
 
 ## Status
-Prototype. Readiness scores are sample values. 3D terrain is procedural and will be replaced with NASADEM elevation data. Test seasons are indicative until checked against NASA POWER records.
+Prototype. Readiness scores are sample values. 3D terrain uses real SRTM elevation and satellite imagery on the live site; an illustrated model is shown where those cannot load. Test seasons are indicative until checked against NASA POWER records.
 
 ## Run
 Open `index.html` in a browser, or visit the live site.
