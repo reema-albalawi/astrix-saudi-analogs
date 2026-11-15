@@ -1166,6 +1166,11 @@ vrBtn.onclick=async()=>{if(!renderer)return;if(renderer.xr.isPresenting){rendere
 
 /* ---------------- REAL TERRAIN (SRTM elevation + satellite imagery) ---------------- */
 const REALZ={wahbah:15,dunes:17,jirsan:16,khaybar:14,rahat:14,hisma:15,hith:17,summan:16,tuwaiq:15,sirhan:15};
+// deepest Esri imagery zoom that has real pixels at each site (deeper returns a 'Map data not yet available' tile)
+const MAXIMG={wahbah:17,dunes:17,jirsan:17,khaybar:17,rahat:17,hisma:17,hith:19,summan:17,tuwaiq:17,sirhan:18};
+function isPlaceholder(im){try{const c=document.createElement('canvas');c.width=c.height=64;const g=c.getContext('2d',{willReadFrequently:true});g.drawImage(im,0,0,64,64);const d=g.getImageData(0,0,64,64).data,h={};let n=0,best=0;
+ for(let k=0;k<d.length;k+=4){if(Math.max(d[k],d[k+1],d[k+2])-Math.min(d[k],d[k+1],d[k+2])>6)continue;const b=Math.round((d[k]+d[k+1]+d[k+2])/12);h[b]=(h[b]||0)+1}
+ for(const b in h){const v=(h[b]||0)+(h[+b-1]||0)+(h[+b+1]||0);if(v>best)best=v}return best/(d.length/4)>.6}catch(e){return false}}
 const HPROC=Object.assign({},H),SCALEPROC={};SITES.forEach(s=>{if(s.terrain)SCALEPROC[s.id]=s.scale});
 const realCache={},realBusy={};let realOK=null;
 const lon2t=(lon,z)=>(lon+180)/360*2**z;
@@ -1177,9 +1182,9 @@ function tint(src,kind){const c=document.createElement('canvas');c.width=src.wid
   if(kind==='moon'){const v=Math.max(0,Math.min(255,((l-128)*1.2+128)*.82));d[k]=d[k+1]=d[k+2]=v}
   else{const v=Math.min(255,l*1.08);d[k]=Math.min(255,v*1.0+18);d[k+1]=v*.6;d[k+2]=v*.4}}
  g.putImageData(im,0,0);return c}
-async function fetchImagery(s,z,N,x0,y0){const ic=document.createElement('canvas');ic.width=ic.height=Math.round(256*N);const ig=ic.getContext('2d');ig.fillStyle='#9a8a74';ig.fillRect(0,0,ic.width,ic.height);const jobs=[];
+async function fetchImagery(s,z,N,x0,y0){const ic=document.createElement('canvas');ic.width=ic.height=Math.round(256*N);const ig=ic.getContext('2d');ig.fillStyle='#9a8a74';ig.fillRect(0,0,ic.width,ic.height);ic.bad=0;const jobs=[];
  for(let tx=Math.floor(x0);tx<=Math.floor(x0+N-1e-9);tx++)for(let ty=Math.floor(y0);ty<=Math.floor(y0+N-1e-9);ty++)
-  jobs.push(loadImg(`https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/${z}/${ty}/${tx}`).then(im=>ig.drawImage(im,(tx-x0)*256,(ty-y0)*256)).catch(()=>{}));
+  jobs.push(loadImg(`https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/${z}/${ty}/${tx}`).then(im=>{if(isPlaceholder(im)){ic.bad++;return}ig.drawImage(im,(tx-x0)*256,(ty-y0)*256)}).catch(()=>{}));
  await Promise.all(jobs);return ic}
 async function fetchElev(z,N,x0,y0,G){const ez=Math.min(z,15),f=2**(z-ez),ex0=Math.floor(x0/f),ey0=Math.floor(y0/f),ew=Math.floor((x0+N)/f)-ex0+1,eh=Math.floor((y0+N)/f)-ey0+1;
  const ec=document.createElement('canvas');ec.width=256*ew;ec.height=256*eh;const eg=ec.getContext('2d',{willReadFrequently:true});const jobs=[];
@@ -1199,11 +1204,12 @@ async function loadReal(id){
  const s=SITES.find(x=>x.id===id),z=REALZ[id];
  const cx=lon2t(s.lon,z),cy=lat2t(s.lat,z);
  // inner patch: 4 tiles wide at zoom z, imagery one zoom deeper (8 tiles) for sharper ground
- const zi=Math.min(z+1,19),Ni=4*2**(zi-z),xi0=lon2t(s.lon,zi)-Ni/2,yi0=lat2t(s.lat,zi)-Ni/2;
+ const imgAt=async zz=>{const N=4*2**(zz-z);return fetchImagery(s,zz,N,lon2t(s.lon,zz)-N/2,lat2t(s.lat,zz)-N/2)};
+ const innerImg=(async()=>{let zz=Math.min(z+1,MAXIMG[id]||19),c=await imgAt(zz);while(c.bad&&zz>z-2){zz--;c=await imgAt(zz)}return c})();
  const x0=cx-2,y0=cy-2;
  // outer ring: 8x wider, three zooms out, for the horizon
  const zo=z-3,xo0=lon2t(s.lon,zo)-2,yo0=lat2t(s.lat,zo)-2;
- const [innerCanvas,hsI,outerCanvas,hsO]=await Promise.all([fetchImagery(s,zi,Ni,xi0,yi0),fetchElev(z,4,x0,y0,241),fetchImagery(s,zo,4,xo0,yo0),fetchElev(zo,4,xo0,yo0,161)]);
+ const [innerCanvas,hsI,outerCanvas,hsO]=await Promise.all([innerImg,fetchElev(z,4,x0,y0,241),fetchImagery(s,zo,4,xo0,yo0),fetchElev(zo,4,xo0,yo0,161)]);
  let mn=1e9;for(const h of hsI)if(h<mn)mn=h;
  const widthM=40075016.686*Math.cos(s.lat*Math.PI/180)/2**z*4,scale=widthM/200;
  for(let k=0;k<hsI.length;k++)hsI[k]=(hsI[k]-mn)/scale;for(let k=0;k<hsO.length;k++)hsO[k]=(hsO[k]-mn)/scale;
@@ -1224,10 +1230,10 @@ async function ensureDetail(){const rt=realCache[cur];if(!rt||H[cur]!==rt.sample
  if(detailState&&detailState.id===cur&&Math.hypot(px-detailState.cx,pz-detailState.cz)<detailState.hs*.45)return;
  detailBusy=true;const id=cur;
  try{let got=null;
-  for(let zd=Math.min(19,z+3);zd>z&&!got;zd--){const f=2**(zd-z);let hs=Math.round((8/f*25)/step)*step;hs=Math.min(hs,100);
+  for(let zd=Math.min(MAXIMG[cur]||19,z+3);zd>z&&!got;zd--){const f=2**(zd-z);let hs=Math.round((8/f*25)/step)*step;hs=Math.min(hs,100);
    let cx=Math.round(px/step)*step,cz=Math.round(pz/step)*step;cx=Math.max(-100+hs,Math.min(100-hs,cx));cz=Math.max(-100+hs,Math.min(100-hs,cz));
    const Nw=2*hs/50*f,tx=(lon2t(s.lon,z)-2+(cx-hs+100)/200*4)*f,ty=(lat2t(s.lat,z)-2+(cz-hs+100)/200*4)*f;
-   const c=await fetchImagery(s,zd,Nw,tx,ty);if(!canvasFlat(c))got={c,hs,cx,cz}}
+   const c=await fetchImagery(s,zd,Nw,tx,ty);if(!c.bad&&!canvasFlat(c))got={c,hs,cx,cz}}
   if(got&&cur===id&&realCache[id]&&H[id]===realCache[id].sampler&&(mode==='walk'||mode==='drive')){
    const {c,hs,cx,cz}=got,seg=Math.round(2*hs/step);
    const g=new THREE.PlaneGeometry(2*hs,2*hs,seg,seg);g.rotateX(-Math.PI/2);g.translate(cx,0,cz);const p=g.attributes.position;
